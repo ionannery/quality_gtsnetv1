@@ -18,13 +18,13 @@
                 <section class="column column-info">
                     <h2>Dados da Unidade Lotérica</h2>
                     <div class="search-container">
-                        <input type="text" id="ul-code" placeholder="Digite o Ponto Lógico/Designação" class="search-input">
+                        <!-- PLACEHOLDER ATUALIZADO -->
+                        <input type="text" id="ul-code" placeholder="Digite Ponto Lógico/Designação ou CPE" class="search-input">
                         <button id="search-btn" class="search-btn btn">Buscar</button>
                     </div>
                     <div id="ul-search-error" class="error-message" style="display:none;"></div>
                     <div class="info-container">
                         <h3>Resultados da Busca:</h3>
-                        <!-- APENAS OS NOVOS CAMPOS ESPECIFICADOS -->
                         <div class="info-item"><span>Ponto Lógico / Designação:</span> <span id="info-ponto-logico-designacao">-</span></div>
                         <div class="info-item"><span>Nome Ponto:</span> <span id="info-nome-ponto">-</span></div>
                         <div class="info-item"><span>CEP:</span> <span id="info-cep">-</span></div>
@@ -42,6 +42,7 @@
                 </section>
 
                 <section class="column column-params">
+                    <!-- O restante da coluna de parâmetros permanece o mesmo da versão anterior -->
                     <h2>Parâmetros para Script</h2>
                     
                     <div class="options-container">
@@ -79,7 +80,6 @@
                         </div>
                     </div>
 
-                    <!-- Inputs de texto para parâmetros adicionais que não são botões -->
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="input-ip-wan-router" class="parameter-label">IP WAN Roteador (Novo):</label>
@@ -89,7 +89,7 @@
                             <label for="input-ip-lan-router" class="parameter-label">IP LAN Roteador (Novo Gateway TFLs):</label>
                             <input type="text" id="input-ip-lan-router" class="param-input">
                         </div>
-                        <div class="input-group"> <!-- Mantido para caso o nome do link dos botões não seja o hostname -->
+                        <div class="input-group">
                             <label for="input-hostname-router" class="parameter-label">Hostname Roteador (se diferente do Link):</label>
                             <input type="text" id="input-hostname-router" class="param-input">
                         </div>
@@ -101,7 +101,6 @@
                             <label for="input-serial-router" class="parameter-label">Serial Router (Novo):</label>
                             <input type="text" id="input-serial-router" class="param-input">
                         </div>
-                        <!-- Campos de Switch só aparecem se "Precisa de Switch?" for SIM (lógica a ser adicionada no JS se desejar) -->
                         <div class="input-group switch-conditional">
                             <label for="input-modelo-switch" class="parameter-label">Modelo Switch (Novo):</label>
                             <input type="text" id="input-modelo-switch" class="param-input">

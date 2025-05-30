@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (event.target.classList.contains('option-btn')) {
                 group.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
                 event.target.classList.add('selected');
-
-                // Lógica para mostrar/esconder campos de switch
                 if (group.dataset.groupName === 'needs_switch') {
                     toggleSwitchFields(event.target.dataset.value === 'SIM');
                 }
@@ -25,34 +23,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Função para mostrar/esconder campos condicionais do switch
     function toggleSwitchFields(show) {
         switchConditionalFields.forEach(field => {
             field.style.display = show ? '' : 'none';
         });
     }
-    // Inicialmente esconder campos de switch (assumindo que "NÃO" pode ser o padrão ou o primeiro botão)
-    // Chame isso após a lógica dos botões para garantir que o estado inicial esteja correto
     const initialNeedsSwitch = getSelectedOptionValue('needs_switch');
     toggleSwitchFields(initialNeedsSwitch === 'SIM');
 
-
-    // Função para obter o valor selecionado de um grupo de botões
     function getSelectedOptionValue(groupName) {
-        const group = document.querySelector(`.button-options[data-group-name="${groupName}"]`);
+        const group = document.querySelector(`.button-options[data-group-name=\\\"${groupName}\\\"]`);
         if (group) {
             const selectedBtn = group.querySelector('.option-btn.selected');
-            if (selectedBtn) {
-                return selectedBtn.dataset.value;
-            }
+            if (selectedBtn) return selectedBtn.dataset.value;
         }
         return null; 
     }
 
-    // Função para exibir dados da UL
     function displayUlData(data) {
-        // Garanta que os nomes 'data.NomeDaColunaNoExcel' correspondam EXATAMENTE ao seu Excel
-        // Ex: se a coluna é "Ponto Lógico / Designação", use data['Ponto Lógico / Designação'] ou renomeie a coluna para PontoLogicoDesignacao
         document.getElementById('info-ponto-logico-designacao').textContent = data.PontoLogicoDesignacao || data.codigoUlBuscavel || '-';
         document.getElementById('info-nome-ponto').textContent = data.NomePonto || '-';
         document.getElementById('info-cep').textContent = data.CEP || '-';
@@ -65,14 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('info-responsavel-entrega-link').textContent = data.ResponsavelEntregaLink || '-';
         document.getElementById('info-designacao-circuito').textContent = data.DesignacaoCircuito || '-';
         document.getElementById('info-cpe').textContent = data.CPE || '-';
-        document.getElementById('info-switch-adicional').textContent = data.SWiTCHConfig || '-'; // Ex: Coluna SWiTCHConfig
-        
+        document.getElementById('info-switch-adicional').textContent = data.SWiTCHConfig || '-';
         ulSearchError.style.display = 'none';
     }
 
-    // Função para limpar display de dados da UL
     function clearUlData() {
-        // Limpa apenas os campos especificados
         const idsToClear = [
             'info-ponto-logico-designacao', 'info-nome-ponto', 'info-cep', 
             'info-endereco-completo', 'info-cidade', 'info-uf', 'info-lan', 
@@ -83,18 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = document.getElementById(id);
             if (el) el.textContent = '-';
         });
-
         scriptOutputTextarea.value = '';
         copyScriptBtn.style.display = 'none';
     }
     
-    // Event listener para botão de busca
     if (searchBtn) {
         searchBtn.addEventListener('click', async () => {
             const query = ulCodeInput.value.trim();
             if (!query) {
                 clearUlData();
-                ulSearchError.textContent = 'Por favor, digite um Ponto Lógico/Designação para buscar.';
+                ulSearchError.textContent = 'Por favor, digite Ponto Lógico/Designação ou CPE para buscar.'; // MENSAGEM INPUT ATUALIZADA
                 ulSearchError.style.display = 'block';
                 return;
             }
@@ -106,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     clearUlData();
                     const errorData = await response.json();
-                    ulSearchError.textContent = errorData.message || `Ponto Lógico/Designação "${query}" não encontrado.`;
+                    // MENSAGEM DE ERRO ATUALIZADA
+                    ulSearchError.textContent = errorData.message || `Nenhum registro encontrado para \\\"${query}\\\".`; 
                     ulSearchError.style.display = 'block';
                 }
             } catch (error) {
@@ -118,11 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Event listener para botão de gerar script
     if (generateScriptBtn) {
         generateScriptBtn.addEventListener('click', async () => {
-            const currentPontoLogico = ulCodeInput.value.trim(); 
-            if (document.getElementById('info-nome-ponto').textContent === '-' || !currentPontoLogico) {
+            const currentSearchTerm = ulCodeInput.value.trim(); 
+            if (document.getElementById('info-nome-ponto').textContent === '-' || !currentSearchTerm) {
                 alert('Por favor, busque e selecione uma Unidade Lotérica válida antes de gerar o script.');
                 return;
             }
@@ -132,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 ownerNovo: getSelectedOptionValue('ownerNovo'),
                 router_model: getSelectedOptionValue('router_model'),
                 needs_switch: getSelectedOptionValue('needs_switch'),
-                
                 ipWanRouter: document.getElementById('input-ip-wan-router').value.trim(),
                 ipLanRouter: document.getElementById('input-ip-lan-router').value.trim(),
                 hostnameRouter: document.getElementById('input-hostname-router').value.trim(),
@@ -141,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 observacoes: document.getElementById('input-observacoes').value.trim(),
             };
 
-            // Adiciona parâmetros de switch apenas se 'needs_switch' for 'SIM'
             if (scriptParams.needs_switch === 'SIM') {
                 scriptParams.modeloSwitch = document.getElementById('input-modelo-switch').value.trim();
                 scriptParams.serialSwitch = document.getElementById('input-serial-switch').value.trim();
@@ -153,10 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
+                // Envia o termo de busca original para o backend
                 const response = await fetch('/api/generate-script', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', },
-                    body: JSON.stringify({ ulCode: currentPontoLogico, scriptParams: scriptParams }),
+                    body: JSON.stringify({ ulCode: currentSearchTerm, scriptParams: scriptParams }),
                 });
 
                 if (response.ok) {
@@ -178,13 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Função de copiar (sem alterações)
-    if (copyScriptBtn) { /* ... (código de cópia como antes) ... */ }
-    function legacyCopy() { /* ... (código de cópia como antes) ... */ }
-    // Cole o código das funções copyScriptBtn e legacyCopy da resposta anterior aqui
-    // Para economizar espaço, não vou repetir aqui.
-
-    // Cole as funções de cópia aqui (copyScriptBtn event listener e legacyCopy)
+    // Funções de cópia (copyScriptBtn event listener e legacyCopy) - MANTIDAS DA VERSÃO ANTERIOR
     if (copyScriptBtn) {
         copyScriptBtn.addEventListener('click', () => {
             scriptOutputTextarea.select();
@@ -232,5 +208,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 3000);
         }
     }
-
 });
