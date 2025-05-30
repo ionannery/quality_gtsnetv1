@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Migração Lotérica</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="container loteria-container">
+        <header class="page-header">
+            <a href="index.html" class="back-link">&larr; Voltar para Home</a>
+            <h1>Relatório de Migração Lotérica</h1>
+        </header>
+        <main class="loteria-main">
+            <form id="loteria-form">
+                <fieldset class="form-section">
+                    <legend>Dados Acesso Primário</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="data">Data:</label>
+                            <input type="date" id="data" name="data" class="form-input">
+                            <small class="validation-message error" id="data-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="oficio">Número do Ofício:</label>
+                            <input type="text" id="oficio" name="oficio" class="form-input" placeholder="Ex: 638538">
+                            <small class="validation-message error" id="oficio-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="codigo-ul">Código Unidade Lotérica:</label>
+                            <input type="text" id="codigo-ul" name="codigo-ul" class="form-input" placeholder="Ex: 16-011781-0">
+                            <small class="validation-message error" id="codigo-ul-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="nome-ul">Nome UL:</label>
+                            <input type="text" id="nome-ul" name="nome-ul" class="form-input" placeholder="Ex: JOSE CARLOS F PEREIRA & CIA L">
+                            <small class="validation-message error" id="nome-ul-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="designador">Designador:</label>
+                            <input type="text" id="designador" name="designador" class="form-input" placeholder="Ex: SPI 5011163">
+                            <small class="validation-message error" id="designador-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="acesso-wan-principal">Acesso WAN:</label>
+                            <input type="text" id="acesso-wan-principal" name="acesso-wan-principal" class="form-input" value="PRINCIPAL">
+                            <small class="validation-message error" id="acesso-wan-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="tecnologia-principal">Tecnologia:</label>
+                            <input type="text" id="tecnologia-principal" name="tecnologia-principal" class="form-input" placeholder="Ex: TERRESTRE">
+                            <small class="validation-message error" id="tecnologia-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="latencia-principal">Latência Principal Medida (até 150ms):</label>
+                            <input type="number" id="latencia-principal" name="latencia-principal" class="form-input" placeholder="Ex: 138">
+                            <small class="validation-message error" id="latencia-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="perda-pacotes-principal">Perda de Pacotes Medida (até 1%):</label>
+                            <input type="number" step="0.1" id="perda-pacotes-principal" name="perda-pacotes-principal" class="form-input" placeholder="Ex: 0">
+                            <small class="validation-message error" id="perda-pacotes-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="comutacao-secundario">Comutação para Secundário (até 60s):</label>
+                            <input type="number" id="comutacao-secundario" name="comutacao-secundario" class="form-input" placeholder="Ex: 59">
+                             <small class="validation-message error" id="comutacao-secundario-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="largura-banda-principal">Largura de Banda (mínima 512 Kbps):</label>
+                            <input type="number" id="largura-banda-principal" name="largura-banda-principal" class="form-input" placeholder="Ex: 512">
+                            <small class="validation-message error" id="largura-banda-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="ip-loopback-principal">IP Loopback Principal:</label>
+                            <input type="text" id="ip-loopback-principal" name="ip-loopback-principal" class="form-input" placeholder="Ex: 10.51.62.228">
+                            <small class="validation-message error" id="ip-loopback-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="ip-loopback-switch">IP Loopback Switch:</label>
+                            <input type="text" id="ip-loopback-switch" name="ip-loopback-switch" class="form-input" placeholder="Ex: 10.52.220.236">
+                            <small class="validation-message error" id="ip-loopback-switch-error"></small>
+                        </div>
+                         <div class="form-group">
+                            <label for="sdwan-principal">SDWAN:</label>
+                            <select id="sdwan-principal" name="sdwan-principal" class="form-input">
+                                <option value="Não">Não</option>
+                                <option value="Sim">Sim</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="acesso-ultima-milha-principal">Acesso Última Milha - Principal:</label>
+                            <input type="text" id="acesso-ultima-milha-principal" name="acesso-ultima-milha-principal" class="form-input" placeholder="Ex: OI">
+                            <small class="validation-message error" id="acesso-ultima-milha-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="nobreak">Instalação novo Nobreak:</label>
+                            <select id="nobreak" name="nobreak" class="form-input">
+                                <option value="false">Não</option>
+                                <option value="true">Sim</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>Dados Acesso Secundário</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="data-secundario">Data:</label>
+                            <input type="date" id="data-secundario" name="data-secundario" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="oficio-secundario">Número do Ofício:</label>
+                            <input type="text" id="oficio-secundario" name="oficio-secundario" class="form-input" placeholder="Ex: 638539">
+                        </div>
+                        <div class="form-group">
+                            <label for="codigo-ul-secundario">Código Unidade Lotérica:</label>
+                            <input type="text" id="codigo-ul-secundario" name="codigo-ul-secundario" class="form-input" placeholder="Ex: 16-011781-0 (geralmente o mesmo)">
+                        </div>
+                        <div class="form-group">
+                            <label for="nome-ul-secundario">Nome UL:</label>
+                            <input type="text" id="nome-ul-secundario" name="nome-ul-secundario" class="form-input" placeholder="Ex: JOSE CARLOS F PEREIRA & CIA L (geralmente o mesmo)">
+                        </div>
+                        <div class="form-group">
+                            <label for="designador-secundario">Designador:</label>
+                            <input type="text" id="designador-secundario" name="designador-secundario" class="form-input" placeholder="Normalmente Cód. UL ou específico">
+                        </div>
+                        <div class="form-group">
+                            <label for="acesso-wan-secundario">Acesso WAN:</label>
+                            <input type="text" id="acesso-wan-secundario" name="acesso-wan-secundario" class="form-input" value="SECUNDARIO">
+                        </div>
+                        <div class="form-group">
+                            <label for="tecnologia-secundario">Tecnologia:</label>
+                            <input type="text" id="tecnologia-secundario" name="tecnologia-secundario" class="form-input" placeholder="Ex: MOVEL">
+                        </div>
+                        <div class="form-group">
+                            <label for="latencia-secundario">Latência Contingência Medida (até 400ms):</label>
+                            <input type="number" id="latencia-secundario" name="latencia-secundario" class="form-input" placeholder="Ex: 138">
+                            <small class="validation-message error" id="latencia-secundario-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="perda-pacotes-secundario">Perda de Pacotes Medida (até 1%):</label>
+                            <input type="number" step="0.1" id="perda-pacotes-secundario" name="perda-pacotes-secundario" class="form-input" placeholder="Ex: 0">
+                            <small class="validation-message error" id="perda-pacotes-secundario-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="comutacao-principal">Comutação para Principal (até 60s):</label>
+                            <input type="number" id="comutacao-principal" name="comutacao-principal" class="form-input" placeholder="Ex: 0">
+                             <small class="validation-message error" id="comutacao-principal-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="largura-banda-secundario">Largura de Banda (mínima 512 Kbps):</label>
+                            <input type="number" id="largura-banda-secundario" name="largura-banda-secundario" class="form-input" placeholder="Ex: 512">
+                            <small class="validation-message error" id="largura-banda-secundario-error"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="ip-loopback-secundario">IP Loopback Contingência:</label>
+                            <input type="text" id="ip-loopback-secundario" name="ip-loopback-secundario" class="form-input" placeholder="Ex: 10.50.150.78">
+                        </div>
+                        <div class="form-group"> <label for="ip-loopback-switch-secundario">IP Loopback Switch:</label>
+                            <input type="text" id="ip-loopback-switch-secundario" name="ip-loopback-switch-secundario" class="form-input" placeholder="Ex: 10.52.220.236 (pode ser o mesmo do principal)">
+                        </div>
+                         <div class="form-group">
+                            <label for="sdwan-secundario">SDWAN:</label>
+                            <select id="sdwan-secundario" name="sdwan-secundario" class="form-input">
+                                <option value="Não">Não</option>
+                                <option value="Sim">Sim</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="acesso-ultima-milha-secundario">Acesso Última Milha:</label>
+                            <input type="text" id="acesso-ultima-milha-secundario" name="acesso-ultima-milha-secundario" class="form-input" placeholder="Ex: SENCINET">
+                        </div>
+                         </div>
+                </fieldset>
+
+                <fieldset class="form-section">
+                    <legend>Evidências de Teste</legend>
+                    <div class="form-group full-width">
+                        <label for="tempo-convergencia-tfl">Tempo de Convergência - TFL (ARP) - DATA E HORÁRIO:</label>
+                        <input type="hidden" id="tempo-convergencia-tfl" name="tempo-convergencia-tfl" class="form-input" value="Tempo de Convergência - TFL (ARP) - DATA E HORÁRIO">
+                        <small class="validation-message error" id="tempo-convergencia-tfl-error"></small>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="evidencia-teste-comutacao">TESTE DE COMUTAÇÃO (Log/Texto):</label>
+                            <textarea id="evidencia-teste-comutacao" name="evidencia-teste-comutacao" class="form-input" rows="5" placeholder="Cole o log do teste de comutação aqui..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidencia-latencia-principal">TESTE DE LATÊNCIA PRINCIPAL (Log/Texto):</label>
+                            <textarea id="evidencia-latencia-principal" name="evidencia-latencia-principal" class="form-input" rows="5" placeholder="Cole o log do teste de latência principal aqui..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidencia-latencia-backup">TESTE DE LATÊNCIA BACKUP (Log/Texto):</label>
+                            <textarea id="evidencia-latencia-backup" name="evidencia-latencia-backup" class="form-input" rows="5" placeholder="Cole o log do teste de latência do backup aqui..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidencia-disparp-principal">DISP ARP PRINCIPAL (Log/Texto):</label>
+                            <textarea id="evidencia-disparp-principal" name="evidencia-disparp-principal" class="form-input" rows="5" placeholder="Cole o log do display arp principal aqui..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidencia-disparp-backup">DISP ARP BACKUP (Log/Texto):</label>
+                            <textarea id="evidencia-disparp-backup" name="evidencia-disparp-backup" class="form-input" rows="5" placeholder="Cole o log do display arp do backup aqui..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidencia-disp-clock-principal">DISP CLOCK PRINCIPAL (Log/Texto):</label>
+                            <textarea id="evidencia-disp-clock-principal" name="evidencia-disp-clock-principal" class="form-input" rows="5" placeholder="Cole o log do display clock principal aqui..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidencia-disp-clock-backup">DISP CLOCK BACKUP (Log/Texto):</label>
+                            <textarea id="evidencia-disp-clock-backup" name="evidencia-disp-clock-backup" class="form-input" rows="5" placeholder="Cole o log do display clock do backup aqui..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <h4>Upload de Imagens (Evidências Fotográficas):</h4>
+                    <div class="form-grid image-upload-grid">
+                        <div class="form-group">
+                            <label for="imagem-evidencia-1">Imagem 1:</label>
+                            <input type="file" id="imagem-evidencia-1" name="imagem-evidencia-1" class="form-input" accept="image/*">
+                            <img id="preview-imagem-1" src="#" alt="Preview Imagem 1" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
+                        </div>
+                        <div class="form-group">
+                            <label for="imagem-evidencia-2">Imagem 2:</label>
+                            <input type="file" id="imagem-evidencia-2" name="imagem-evidencia-2" class="form-input" accept="image/*">
+                            <img id="preview-imagem-2" src="#" alt="Preview Imagem 2" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
+                        </div>
+                        <div class="form-group">
+                            <label for="imagem-evidencia-3">Imagem 3:</label>
+                            <input type="file" id="imagem-evidencia-3" name="imagem-evidencia-3" class="form-input" accept="image/*">
+                            <img id="preview-imagem-3" src="#" alt="Preview Imagem 3" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
+                        </div>
+                        <div class="form-group">
+                            <label for="imagem-evidencia-4">Imagem 4:</label>
+                            <input type="file" id="imagem-evidencia-4" name="imagem-evidencia-4" class="form-input" accept="image/*">
+                            <img id="preview-imagem-4" src="#" alt="Preview Imagem 4" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <button type="button" id="generate-pdf-btn" class="btn pdf-btn">Gerar PDF</button>
+            </form>
+        </main>
+        <footer class="main-footer">
+            <p>&copy; 2025 Quality GTSNet. Desenvolvido by Klayver Alencar</p>
+        </footer>
+    </div>
+    <script src="js/loteria.js"></script>
+</body>
+</html>

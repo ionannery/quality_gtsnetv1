@@ -1,0 +1,493 @@
+/* General Styles & Variables */
+:root {
+    --primary-color: #EF8700; /* Orange */
+    --secondary-color: #737372; /* Gray */
+    --accent-color: #FFA726; /* Lighter Orange for hover/accent */
+    --background-gradient-start: #2c3e50; /* Dark Blue-Gray */
+    --background-gradient-end: #1a2a3c;   /* Darker Blue-Gray */
+    --text-color-light: #ecf0f1;         /* Light Gray for text on dark backgrounds */
+    --text-color-dark: #333;          /* Dark Gray for text on light backgrounds */
+    --container-bg-color: #ffffff;
+    --input-bg-color: #f8f9fa;
+    --input-border-color: #ced4da;
+    --danger-color: #e74c3c;
+    --success-color: #2ecc71;
+
+    --font-family-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --base-spacing: 1rem; /* 16px */
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --box-shadow-light: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family-main);
+    line-height: 1.6;
+    color: var(--text-color-light);
+    background-image: linear-gradient(to bottom right, var(--background-gradient-start), var(--background-gradient-end));
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: var(--base-spacing);
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px; /* Max width for larger screens */
+    margin: auto;
+    padding: calc(var(--base-spacing) * 1.5);
+    background-color: rgba(255, 255, 255, 0.05); /* Slight transparency for depth */
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.main-header, .page-header {
+    text-align: center;
+    margin-bottom: calc(var(--base-spacing) * 2);
+    padding-bottom: var(--base-spacing);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.main-header h1 {
+    font-size: 2.8rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.page-header h1 {
+    font-size: 2.2rem;
+    color: var(--text-color-light);
+    margin-top: var(--base-spacing);
+}
+
+.back-link {
+    display: block;
+    text-align: left;
+    margin-bottom: var(--base-spacing);
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: var(--accent-color);
+}
+
+/* Footer Styles */
+.main-footer {
+    text-align: center;
+    margin-top: auto; /* Pushes footer to the bottom */
+    padding-top: var(--base-spacing);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    padding: calc(var(--base-spacing) * 0.8) calc(var(--base-spacing) * 1.8);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color-light);
+    background-image: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    border: none;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn:hover, .btn:focus {
+    background-image: linear-gradient(to right, var(--accent-color), var(--primary-color));
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+}
+
+.btn-large {
+    padding: var(--base-spacing) calc(var(--base-spacing) * 2.5);
+    font-size: 1.4rem;
+    margin: var(--base-spacing);
+}
+
+/* Specific button styles for search, generate, pdf, copy */
+.search-btn, .generate-btn, .pdf-btn, .copy-btn {
+    /* These already have .btn class in HTML for base styling. 
+       The styles below will override or add to .btn */
+    width: 100%; /* Ensure they take full width if desired */
+    padding: calc(var(--base-spacing) * 0.7) calc(var(--base-spacing) * 1.8); /* Match .btn padding or adjust */
+    margin-top: var(--base-spacing); /* Keep existing margin */
+}
+
+.copy-btn { /* This overrides .btn background-image for copy button specifically */
+    background-image: linear-gradient(to right, var(--secondary-color), #999999); /* Ensure #999 is #999999 for 6-digit hex */
+}
+.copy-btn:hover {
+     background-image: linear-gradient(to right, #999999, var(--secondary-color));
+}
+
+
+/* Home Page Specific */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.home-main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base-spacing) * 1.5);
+}
+
+/* Pega Script Page Specific */
+.pega-script-main {
+    flex-grow: 1;
+}
+.columns-container {
+    display: flex;
+    flex-direction: row;
+    gap: calc(var(--base-spacing) * 2);
+}
+
+.column {
+    padding: var(--base-spacing);
+    background-color: rgba(0,0,0,0.1); /* Darker background for columns */
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-light);
+}
+
+.column-info {
+    flex: 0 0 35%; /* 30% as per original thought, adjusted for better spacing */
+}
+
+.column-params {
+    flex: 1; /* Takes remaining space */
+}
+
+.column h2, .column h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--base-spacing);
+    border-bottom: 1px solid var(--secondary-color);
+    padding-bottom: calc(var(--base-spacing) / 2);
+}
+.column h3 {
+    margin-top: var(--base-spacing);
+    font-size: 1.1rem;
+}
+
+
+.search-container {
+    display: flex;
+    gap: calc(var(--base-spacing) / 2);
+    margin-bottom: var(--base-spacing);
+}
+
+.search-input, .param-input, .form-input {
+    flex-grow: 1;
+    padding: calc(var(--base-spacing) * 0.6);
+    border: 1px solid var(--input-border-color);
+    border-radius: calc(var(--border-radius) / 2);
+    background-color: var(--input-bg-color);
+    color: var(--text-color-dark);
+    font-family: var(--font-family-main);
+    font-size: 0.95rem;
+}
+.search-input:focus, .param-input:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(239, 135, 0, 0.3);
+}
+
+
+.search-btn { /* Applied to search button specifically */
+    flex-grow: 0; /* Do not grow */
+    flex-basis: auto; /* Let button size based on content + padding */
+    white-space: nowrap; /* Prevent text wrapping */
+    margin-top: 0; /* Remove top margin if it's next to input */
+    width: auto; /* Override 100% width from general .search-btn rule if needed here */
+}
+
+
+.info-container {
+    margin-top: var(--base-spacing);
+}
+
+.info-item {
+    background-color: rgba(255,255,255,0.05);
+    padding: calc(var(--base-spacing) * 0.5);
+    margin-bottom: calc(var(--base-spacing) / 2);
+    border-radius: calc(var(--border-radius) / 2);
+    font-size: 0.9rem;
+}
+
+.info-item span:first-child {
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-right: calc(var(--base-spacing) / 2);
+}
+
+.input-grid { /* This class might be unused now, or only for specific layouts */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--base-spacing);
+    margin-bottom: var(--base-spacing); /* Added margin if it's directly used */
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--base-spacing); 
+}
+.input-group.full-width {
+    grid-column: 1 / -1; /* Span full width if parent is grid */
+}
+
+.input-group label { /* Default label style */
+    margin-bottom: calc(var(--base-spacing) / 3);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+}
+
+.script-output {
+    width: 100%;
+    padding: var(--base-spacing);
+    border: 1px solid var(--input-border-color);
+    border-radius: calc(var(--border-radius) / 2);
+    background-color: #222; /* Darker for code */
+    color: #f0f0f0; /* Light text for code */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 200px;
+    margin-top: calc(var(--base-spacing) / 2);
+}
+
+/* Loteria Page Specific */
+.loteria-main {
+    flex-grow: 1;
+}
+
+.form-section {
+    background-color: rgba(0,0,0,0.1);
+    padding: calc(var(--base-spacing) * 1.5);
+    margin-bottom: calc(var(--base-spacing) * 2);
+    border: 1px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-light);
+}
+
+.form-section legend {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding: 0 calc(var(--base-spacing) / 2);
+    margin-left: var(--base-spacing); /* Align with content */
+    background-color: var(--background-gradient-end); /* Match body background for seamless look */
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: var(--base-spacing);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: calc(var(--base-spacing) / 3);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+}
+
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23EF8700' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1em;
+    padding-right: 2.5rem; /* Make space for arrow */
+}
+
+/* Error and Success Messages */
+.error-message, .success-message {
+    padding: calc(var(--base-spacing) * 0.5);
+    margin-top: calc(var(--base-spacing) * 0.5);
+    border-radius: calc(var(--border-radius) / 2);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.error-message {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.success-message {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.validation-message {
+    font-size: 0.8em;
+    margin-top: 0.25em;
+}
+.validation-message.error {
+    color: var(--danger-color);
+}
+.validation-message.success { /* Optional: for success feedback on fields */
+    color: var(--success-color);
+}
+input.invalid {
+    border-color: var(--danger-color) !important;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3) !important;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 992px) { /* Medium devices (tablets) */
+    .columns-container {
+        flex-direction: column;
+    }
+    .column-info {
+        flex: 1; /* Full width on smaller screens */
+    }
+    .main-header h1 {
+        font-size: 2.2rem;
+    }
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+    .btn-large {
+        font-size: 1.2rem;
+        padding: calc(var(--base-spacing)*0.8) calc(var(--base-spacing) * 2);
+    }
+}
+
+@media (max-width: 768px) { /* Small devices (landscape phones, large portrait phones) */
+    .form-grid {
+        grid-template-columns: 1fr; /* Single column for form groups */
+    }
+     .input-grid {
+        grid-template-columns: 1fr; /* Single column for script params */
+    }
+    .container {
+        padding: var(--base-spacing);
+    }
+    .main-header h1 {
+        font-size: 2rem;
+    }
+    .page-header h1 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 576px) { /* Extra small devices (portrait phones) */
+    body {
+        padding: calc(var(--base-spacing) / 2);
+    }
+    .container {
+        padding: calc(var(--base-spacing) * 0.75);
+    }
+    .main-header h1 {
+        font-size: 1.8rem;
+    }
+    .page-header h1 {
+        font-size: 1.4rem;
+    }
+    .btn, .btn-large {
+        font-size: 1rem;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .search-btn { /* Ensure search button doesn't take full width on small screens if next to input */
+        width: auto; 
+    }
+    .button-container {
+        width: 90%;
+    }
+}
+
+/* STYLES FOR NEW OPTION BUTTONS - ADD THESE AT THE END */
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--base-spacing);
+    margin-bottom: var(--base-spacing);
+}
+
+.parameter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.parameter-label { /* Style for labels like "Qual o Link?", "Observações" etc. */
+    font-weight: 600;
+    font-size: 1rem; 
+    color: var(--primary-color); /* Orange */
+    margin-bottom: calc(var(--base-spacing) / 2);
+}
+
+.button-options {
+    display: flex;
+    gap: calc(var(--base-spacing) / 2);
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+}
+
+.option-btn {
+    padding: calc(var(--base-spacing) * 0.7) calc(var(--base-spacing) * 1.2);
+    font-size: 0.95rem; 
+    font-weight: 600; /* Text negrito */
+    color: var(--text-color-light); /* Text white/light */
+    background-color: #222222; /* Dark background for non-selected */
+    border: 2px solid #222222; /* Border same color as background */
+    border-radius: calc(var(--border-radius) / 2);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    text-align: center;
+    flex-grow: 1; /* Distribute space among buttons in a row */
+    min-width: 100px; /* Minimum width for readability */
+}
+
+.option-btn:hover:not(.selected) {
+    background-color: #333333; /* Slightly lighter on hover */
+    border-color: var(--secondary-color); /* Gray border on hover */
+}
+
+.option-btn.selected {
+    background-color: #222222; /* Keep dark background as per image */
+    color: var(--text-color-light); /* Text white/light */
+    border-color: var(--primary-color); /* Orange border for selected */
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pega Script - Gerador de Configurações</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container pega-script-container">
+        <header class="page-header">
+            <a href="index.html" class="back-link">&larr; Voltar para Home</a>
+            <h1>Pega Script - Gerador de Configurações</h1>
+        </header>
+        <main class="pega-script-main">
+            <div class="columns-container">
+                <section class="column column-info">
+                    <h2>Dados da Unidade Lotérica</h2>
+                    <div class="search-container">
+                        <input type="text" id="ul-code" placeholder="Digite o Ponto Lógico/Designação" class="search-input">
+                        <button id="search-btn" class="search-btn btn">Buscar</button>
+                    </div>
+                    <div id="ul-search-error" class="error-message" style="display:none;"></div>
+                    <div class="info-container">
+                        <h3>Resultados da Busca:</h3>
+                        <!-- APENAS OS NOVOS CAMPOS ESPECIFICADOS -->
+                        <div class="info-item"><span>Ponto Lógico / Designação:</span> <span id="info-ponto-logico-designacao">-</span></div>
+                        <div class="info-item"><span>Nome Ponto:</span> <span id="info-nome-ponto">-</span></div>
+                        <div class="info-item"><span>CEP:</span> <span id="info-cep">-</span></div>
+                        <div class="info-item"><span>Endereço Completo:</span> <span id="info-endereco-completo">-</span></div>
+                        <div class="info-item"><span>Cidade:</span> <span id="info-cidade">-</span></div>
+                        <div class="info-item"><span>UF:</span> <span id="info-uf">-</span></div>
+                        <div class="info-item"><span>LAN:</span> <span id="info-lan">-</span></div>
+                        <div class="info-item"><span>Porta (19/12/24):</span> <span id="info-porta-config">-</span></div>
+                        <div class="info-item"><span>Switch (Equipamento):</span> <span id="info-switch-equipamento">-</span></div>
+                        <div class="info-item"><span>Responsável Entrega Link:</span> <span id="info-responsavel-entrega-link">-</span></div>
+                        <div class="info-item"><span>Designação Circuito:</span> <span id="info-designacao-circuito">-</span></div>
+                        <div class="info-item"><span>CPE:</span> <span id="info-cpe">-</span></div>
+                        <div class="info-item"><span>SWiTCH (Configuração/Info):</span> <span id="info-switch-adicional">-</span></div>
+                    </div>
+                </section>
+
+                <section class="column column-params">
+                    <h2>Parâmetros para Script</h2>
+                    
+                    <div class="options-container">
+                        <div class="parameter-group">
+                            <label class="parameter-label">Qual o Link?</label>
+                            <div class="button-options" data-group-name="linkNovo">
+                                <button type="button" class="option-btn selected" data-value="LINK OI">LINK OI</button>
+                                <button type="button" class="option-btn" data-value="LINK VIVO">LINK VIVO</button>
+                            </div>
+                        </div>
+
+                        <div class="parameter-group">
+                            <label class="parameter-label">Quem e OWN?</label>
+                            <div class="button-options" data-group-name="ownerNovo">
+                                <button type="button" class="option-btn selected" data-value="OWNER OI">OWNER OI</button>
+                                <button type="button" class="option-btn" data-value="OWNER SECNET">OWNER SECNET</button>
+                            </div>
+                        </div>
+
+                        <div class="parameter-group">
+                            <label class="parameter-label">Modelo do router?</label>
+                            <div class="button-options" data-group-name="router_model">
+                                <button type="button" class="option-btn selected" data-value="HP">HP</button>
+                                <button type="button" class="option-btn" data-value="HUAWEI">HUAWEI</button>
+                                <button type="button" class="option-btn" data-value="CISCO">CISCO</button>
+                            </div>
+                        </div>
+
+                        <div class="parameter-group">
+                            <label class="parameter-label">Precisa de switch?</label>
+                            <div class="button-options" data-group-name="needs_switch">
+                                <button type="button" class="option-btn selected" data-value="SIM">SIM</button>
+                                <button type="button" class="option-btn" data-value="NÃO">NÃO</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inputs de texto para parâmetros adicionais que não são botões -->
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="input-ip-wan-router" class="parameter-label">IP WAN Roteador (Novo):</label>
+                            <input type="text" id="input-ip-wan-router" class="param-input">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-ip-lan-router" class="parameter-label">IP LAN Roteador (Novo Gateway TFLs):</label>
+                            <input type="text" id="input-ip-lan-router" class="param-input">
+                        </div>
+                        <div class="input-group"> <!-- Mantido para caso o nome do link dos botões não seja o hostname -->
+                            <label for="input-hostname-router" class="parameter-label">Hostname Roteador (se diferente do Link):</label>
+                            <input type="text" id="input-hostname-router" class="param-input">
+                        </div>
+                         <div class="input-group">
+                            <label for="input-firmware-router" class="parameter-label">Firmware Router (Novo):</label>
+                            <input type="text" id="input-firmware-router" class="param-input">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-serial-router" class="parameter-label">Serial Router (Novo):</label>
+                            <input type="text" id="input-serial-router" class="param-input">
+                        </div>
+                        <!-- Campos de Switch só aparecem se "Precisa de Switch?" for SIM (lógica a ser adicionada no JS se desejar) -->
+                        <div class="input-group switch-conditional">
+                            <label for="input-modelo-switch" class="parameter-label">Modelo Switch (Novo):</label>
+                            <input type="text" id="input-modelo-switch" class="param-input">
+                        </div>
+                        <div class="input-group switch-conditional">
+                            <label for="input-serial-switch" class="parameter-label">Serial Switch (Novo):</label>
+                            <input type="text" id="input-serial-switch" class="param-input">
+                        </div>
+                         <div class="input-group switch-conditional">
+                            <label for="input-firmware-switch" class="parameter-label">Firmware Switch (Novo):</label>
+                            <input type="text" id="input-firmware-switch" class="param-input">
+                        </div>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label for="input-observacoes" class="parameter-label">Observações:</label>
+                        <textarea id="input-observacoes" class="param-input" rows="3"></textarea>
+                    </div>
+                    <button id="generate-script-btn" class="generate-btn btn">Gerar Script</button>
+                    <h3>Script Gerado:</h3>
+                    <textarea id="script-output" rows="15" readonly class="script-output"></textarea>
+                    <button id="copy-script-btn" class="copy-btn btn" style="display:none;">Copiar Script</button>
+                    <div id="copy-success-message" class="success-message" style="display:none;">Script copiado com sucesso!</div>
+                </section>
+            </div>
+        </main>
+        <footer class="main-footer">
+            <p>&copy; 2025 Quality GTSNet. Desenvolvido by Klayver Alencar</p>
+        </footer>
+    </div>
+    <script src="js/pega-script.js"></script>
+</body>
+</html>
