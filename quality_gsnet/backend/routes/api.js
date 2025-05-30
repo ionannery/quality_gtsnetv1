@@ -82,9 +82,9 @@ router.post('/generate-script', (req, res) => {
     script += `! Novo Modelo Switch: ${scriptParams.modeloSwitch || 'N/A'} (Serial: ${scriptParams.serialSwitch || 'N/A'}, FW: ${scriptParams.firmwareSwitch || 'N/A'})\n`;
     script += `!\n`;
     if (scriptParams.observacoes) {
-        script += `! Observações (via Formulário):\n`;
-        scriptParams.observacoes.split('\n').forEach(line => {
-            script += `! ${line}\n`;
+        script += `! Observações (via Formulário):\\\\\\\\n`;
+        scriptParams.observacoes.split('\\\\\\\\n').forEach(line => {
+            script += `! ${line}\\\\\\\\n`;
         });
     }
     script += `!\n`;
