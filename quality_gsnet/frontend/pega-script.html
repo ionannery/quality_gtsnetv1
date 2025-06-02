@@ -18,33 +18,20 @@
                 <section class="column column-info">
                     <h2>Dados da Unidade Lotérica</h2>
                     <div class="search-container">
-                        <!-- PLACEHOLDER ATUALIZADO -->
-                        <input type="text" id="ul-code" placeholder="Digite Ponto Lógico/Designação ou CPE" class="search-input">
+                        <input type="text" id="ul-code" placeholder="Digite Site (UL), Design. Circ. ou CPE" class="search-input">
                         <button id="search-btn" class="search-btn btn">Buscar</button>
                     </div>
                     <div id="ul-search-error" class="error-message" style="display:none;"></div>
-                    <div class="info-container">
+                    
+                    <div class="info-container" id="dynamic-info-container">
                         <h3>Resultados da Busca:</h3>
-                        <div class="info-item"><span>Ponto Lógico / Designação:</span> <span id="info-ponto-logico-designacao">-</span></div>
-                        <div class="info-item"><span>Nome Ponto:</span> <span id="info-nome-ponto">-</span></div>
-                        <div class="info-item"><span>CEP:</span> <span id="info-cep">-</span></div>
-                        <div class="info-item"><span>Endereço Completo:</span> <span id="info-endereco-completo">-</span></div>
-                        <div class="info-item"><span>Cidade:</span> <span id="info-cidade">-</span></div>
-                        <div class="info-item"><span>UF:</span> <span id="info-uf">-</span></div>
-                        <div class="info-item"><span>LAN:</span> <span id="info-lan">-</span></div>
-                        <div class="info-item"><span>Porta (19/12/24):</span> <span id="info-porta-config">-</span></div>
-                        <div class="info-item"><span>Switch (Equipamento):</span> <span id="info-switch-equipamento">-</span></div>
-                        <div class="info-item"><span>Responsável Entrega Link:</span> <span id="info-responsavel-entrega-link">-</span></div>
-                        <div class="info-item"><span>Designação Circuito:</span> <span id="info-designacao-circuito">-</span></div>
-                        <div class="info-item"><span>CPE:</span> <span id="info-cpe">-</span></div>
-                        <div class="info-item"><span>SWiTCH (Configuração/Info):</span> <span id="info-switch-adicional">-</span></div>
+                        <!-- Os itens de informação (rótulos e valores) serão adicionados aqui pelo JavaScript -->
                     </div>
                 </section>
 
                 <section class="column column-params">
-                    <!-- O restante da coluna de parâmetros permanece o mesmo da versão anterior -->
                     <h2>Parâmetros para Script</h2>
-                    
+                    <!-- Restante do HTML da coluna de parâmetros (opções de link, owner, etc.) permanece o mesmo -->
                     <div class="options-container">
                         <div class="parameter-group">
                             <label class="parameter-label">Qual o Link?</label>
@@ -53,7 +40,6 @@
                                 <button type="button" class="option-btn" data-value="LINK VIVO">LINK VIVO</button>
                             </div>
                         </div>
-
                         <div class="parameter-group">
                             <label class="parameter-label">Quem e OWN?</label>
                             <div class="button-options" data-group-name="ownerNovo">
@@ -61,7 +47,6 @@
                                 <button type="button" class="option-btn" data-value="OWNER SECNET">OWNER SECNET</button>
                             </div>
                         </div>
-
                         <div class="parameter-group">
                             <label class="parameter-label">Modelo do router?</label>
                             <div class="button-options" data-group-name="router_model">
@@ -70,7 +55,6 @@
                                 <button type="button" class="option-btn" data-value="CISCO">CISCO</button>
                             </div>
                         </div>
-
                         <div class="parameter-group">
                             <label class="parameter-label">Precisa de switch?</label>
                             <div class="button-options" data-group-name="needs_switch">
@@ -79,7 +63,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="input-grid">
                         <div class="input-group">
                             <label for="input-ip-wan-router" class="parameter-label">IP WAN Roteador (Novo):</label>
@@ -114,7 +97,6 @@
                             <input type="text" id="input-firmware-switch" class="param-input">
                         </div>
                     </div>
-
                     <div class="input-group full-width">
                         <label for="input-observacoes" class="parameter-label">Observações:</label>
                         <textarea id="input-observacoes" class="param-input" rows="3"></textarea>
