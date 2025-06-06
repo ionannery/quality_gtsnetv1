@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pega Script - Gerador de Configurações</title>
+    <title>Informações UL / Gerador de Script</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -11,7 +11,7 @@
     <div class="container pega-script-container">
         <header class="page-header">
             <a href="index.html" class="back-link">&larr; Voltar para Home</a>
-            <h1>Pega Script - Gerador de Configurações</h1>
+            <h1>Informações UL / Gerador de Script</h1>
         </header>
         <main class="pega-script-main">
             <div class="columns-container">
@@ -20,6 +20,10 @@
                     <div class="search-container">
                         <input type="text" id="ul-code" placeholder="Digite Site (UL), Design. Circ. ou CPE" class="search-input">
                         <button id="search-btn" class="search-btn btn">Buscar</button>
+                    </div>
+                    <div id="loading-indicator" class="loading-container" style="display:none;">
+                        <div class="loading-spinner"></div>
+                        <span class="loading-text">Buscando dados...</span>
                     </div>
                     <div id="ul-search-error" class="error-message" style="display:none;"></div>
                     

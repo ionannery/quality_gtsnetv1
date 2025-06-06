@@ -11,53 +11,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const switchConditionalFields = document.querySelectorAll('.switch-conditional');
     const dynamicInfoContainer = document.getElementById('dynamic-info-container');
     const optionGroups = document.querySelectorAll('.button-options');
+    const loadingIndicator = document.getElementById('loading-indicator');
 
     // Mapeamento de nomes de colunas (CHAVES = Nomes EXATOS do Excel/Backend)
     // para nomes de exibição (VALORES = Como aparecem na tela)
     const columnDisplayMap = {
-        'codigoulbuscavel': 'Código UL',
-        'NomePonto': 'Nome Lotérica',         // "Nome Ponto" da planilha será exibido como "Nome Lotérica"
-        'loopback_principal': 'Loopback Principal',
-        'loopback_contigencia': 'Loopback Contingência',
-        'IP_wan_principal': 'IP WAN Principal',
-        'IP_wan_contigencia': 'IP WAN Contingência',
-        'loopback_switch': 'Loopback Switch',
-        'modelo': 'Modelo Equipamento',
-        'desig_circ_pri': 'Design. Circ. Primário',
-        'EnderecoCompleto': 'Endereço Completo', // Certifique-se que este é o nome EXATO da coluna no Excel
-        'Cidade': 'Cidade',                   // Certifique-se que este é o nome EXATO da coluna no Excel
-        'UF': 'UF',                           // Ou 'uf' se for o caso
-        'rede_lan_subnet': 'Rede LAN',
-        'principal_consorcio': 'Consórcio Principal',
-        'tipo': 'Tipo',
-        'lan_ownership': 'Propriedade LAN',
-        'vendor': 'Fabricante',
-        'lot_hibrida': 'Lotérica Híbrida',
-        'mod_skyedge': 'Mod. SkyEdge',
+        'codigoulbuscavel': 'Código UL',         // "Nome Ponto" da planilha será exibido como "Nome Lotérica"
+        'desig_circ_pri': 'Design. Circ. Primário',                  // Certifique-se que este é o nome EXATO da coluna no Excel                           // Ou 'uf' se for o caso
     };
 
     // Ordem em que os campos devem ser exibidos inicialmente.
     // Use as CHAVES do columnDisplayMap.
     const displayOrder = [
         'codigoulbuscavel',
-        'NomePonto', // Será exibido como "Nome Lotérica"
-        'loopback_principal',
-        'loopback_contigencia',
-        'IP_wan_principal',
-        'IP_wan_contigencia',
-        'loopback_switch',
-        'modelo',
         'desig_circ_pri',
-        'EnderecoCompleto',
-        'Cidade',
+        'NOME',
         'UF',
-        'rede_lan_subnet',
-        'principal_consorcio',
-        'tipo',
-        'lan_ownership',
-        'vendor',
-        'lot_hibrida',
-        'mod_skyedge',
+        'REDE_LAN_(SUBNET/28)',
+        'LOOPBACK_PRINCIPAL',
+        'LOOPBACK_CONTINGÊNCIA',
+        'OFICIO_PRIMARIO',
+        'OFICIO_CONTINGENCIA',
     ];
 
     // Funções toggleSwitchFields e getSelectedOptionValue (completas)
@@ -203,7 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 ulSearchError.style.display = 'block';
                 return;
             }
-            clearUlData(); 
+            clearUlData();
+            
+            // Mostrar loading
+            if (loadingIndicator) loadingIndicator.style.display = 'flex';
+            searchBtn.disabled = true;
+            
             try {
                 const response = await fetch(`/api/ul-data/${encodeURIComponent(query)}`);
                 if (response.ok) {
@@ -223,6 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 ulSearchError.textContent = 'Erro de comunicação ao buscar dados. Verifique o console.';
                 ulSearchError.style.display = 'block';
                 console.error('Erro ao buscar dados da UL:', error);
+            } finally {
+                // Esconder loading e reabilitar botão
+                if (loadingIndicator) loadingIndicator.style.display = 'none';
+                searchBtn.disabled = false;
             }
         });
     }
