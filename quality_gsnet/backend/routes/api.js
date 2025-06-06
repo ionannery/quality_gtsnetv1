@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const router = express.Router();
 
-const excelFileName = 'lotericas_data.xlsx';
+const excelFileName = 'lotericas_data2.xlsx';
 const excelFilePath = path.join(__dirname, '..', 'data', excelFileName);
 
 let excelDataCache = null;
