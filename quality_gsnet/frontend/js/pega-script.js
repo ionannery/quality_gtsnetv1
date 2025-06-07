@@ -16,23 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mapeamento de nomes de colunas (CHAVES = Nomes EXATOS do Excel/Backend)
     // para nomes de exibição (VALORES = Como aparecem na tela)
     const columnDisplayMap = {
-        'codigoulbuscavel': 'Código UL',         // "Nome Ponto" da planilha será exibido como "Nome Lotérica"
-        'desig_circ_pri': 'Design. Circ. Primário',                  // Certifique-se que este é o nome EXATO da coluna no Excel                           // Ou 'uf' se for o caso
+        'codigoulbuscavel': 'Código UL',         
+        'desig_circ_pri': 'Design. Circ. Primário',
+        'nomeponto': 'Nome Lotérica',
+        'rede_lan_subnet': 'Rede LAN (SUBNET/28)',
+        'loopback_principal': 'Loopback Principal',
+        'loopback_contigencia': 'Loopback Contigência',
+        'oficio_primario': 'Ofício Primário',
+        'oficio_secundario': 'Ofício Secundário',
+        'tipo': 'Tipo',
+        'loopback_switch': 'Loopback Switch',
+        'enderecocompleto': 'Endereço Completo',
+        'cidade': 'Cidade',
+        'uf': 'UF',
+        'cep': 'CEP',
+        'latencia_secundaria': 'Latência Secundária',
     };
 
     // Ordem em que os campos devem ser exibidos inicialmente.
     // Use as CHAVES do columnDisplayMap.
-    const displayOrder = [
-        'codigoulbuscavel',
-        'desig_circ_pri',
-        'NOME',
-        'UF',
-        'REDE_LAN_(SUBNET/28)',
-        'LOOPBACK_PRINCIPAL',
-        'LOOPBACK_CONTINGÊNCIA',
-        'OFICIO_PRIMARIO',
-        'OFICIO_CONTINGENCIA',
-    ];
+  const displayOrder = [
+         ];
 
     // Funções toggleSwitchFields e getSelectedOptionValue (completas)
     function toggleSwitchFields(show) {
