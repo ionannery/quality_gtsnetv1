@@ -149,8 +149,30 @@ router.get('/ul-data/:searchTerm', (req, res) => {
     }
 
     if (foundEntry) {
-        const {_normalized_codigoulbuscavel, _original_codigoulbuscavel_lower, _desig_circ_pri_lower, _cpe_lower, _nomeponto_lower, ...returnData} = foundEntry;
-        res.json(returnData);
+        // Lista de campos permitidos para resposta
+        const allowedFields = [
+            'codigoulbuscavel',
+            'desig_circ_pri',
+            'nomeponto',
+            'rede_lan_subnet',
+            'loopback_principal',
+            'loopback_contigencia',
+            'oficio_primario',
+            'oficio_secundario',
+            'tipo',
+            'loopback_switch',
+            'enderecocompleto',
+            'cidade',
+            'uf',
+            'cep',
+            'latencia_secundaria'
+        ];
+        // Monta objeto apenas com os campos permitidos
+        const filteredData = {};
+        allowedFields.forEach(field => {
+            filteredData[field] = foundEntry[field] !== undefined ? foundEntry[field] : '';
+        });
+        res.json(filteredData);
     } else {
         console.log(`Nenhuma entrada encontrada para o termo '${originalSearchTerm}'.`);
         res.status(404).json({ message: `Nenhum registro encontrado para "${originalSearchTerm}".` });
