@@ -218,27 +218,10 @@
                     </div>
                     
                     <h4>Upload de Imagens (Evidências Fotográficas):</h4>
-                    <div class="form-grid image-upload-grid">
-                        <div class="form-group">
-                            <label for="imagem-evidencia-1">Imagem 1:</label>
-                            <input type="file" id="imagem-evidencia-1" name="imagem-evidencia-1" class="form-input" accept="image/*">
-                            <img id="preview-imagem-1" src="#" alt="Preview Imagem 1" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
-                        </div>
-                        <div class="form-group">
-                            <label for="imagem-evidencia-2">Imagem 2:</label>
-                            <input type="file" id="imagem-evidencia-2" name="imagem-evidencia-2" class="form-input" accept="image/*">
-                            <img id="preview-imagem-2" src="#" alt="Preview Imagem 2" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
-                        </div>
-                        <div class="form-group">
-                            <label for="imagem-evidencia-3">Imagem 3:</label>
-                            <input type="file" id="imagem-evidencia-3" name="imagem-evidencia-3" class="form-input" accept="image/*">
-                            <img id="preview-imagem-3" src="#" alt="Preview Imagem 3" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
-                        </div>
-                        <div class="form-group">
-                            <label for="imagem-evidencia-4">Imagem 4:</label>
-                            <input type="file" id="imagem-evidencia-4" name="imagem-evidencia-4" class="form-input" accept="image/*">
-                            <img id="preview-imagem-4" src="#" alt="Preview Imagem 4" style="display:none; max-width: 100%; height: auto; margin-top: 10px; border-radius: var(--border-radius);">
-                        </div>
+                    <div class="form-group full-width">
+                        <label for="imagens-evidencia">Imagens:</label>
+                        <input type="file" id="imagens-evidencia" name="imagens-evidencia" class="form-input" accept="image/*" multiple>
+                        <div id="preview-imagens" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div>
                     </div>
                 </fieldset>
 

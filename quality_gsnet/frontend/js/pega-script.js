@@ -68,6 +68,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialNeedsSwitch = getSelectedOptionValue('needs_switch');
     toggleSwitchFields(initialNeedsSwitch === 'SIM');
 
+    // --- NOVA LÓGICA PARA TIPOS E CAMPOS CONDICIONAIS ---
+    const tipoBtns = document.querySelectorAll('.button-options[data-group-name="tipo_script"] .option-btn');
+    const tipo1Params = document.getElementById('tipo1-params');
+    // (No futuro: const tipo2Params = document.getElementById('tipo2-params'); ...)
+    const routerBtns = document.querySelectorAll('.button-options[data-group-name="router_model"] .option-btn');
+    const huaweiVersionGroup = document.getElementById('huawei-version-group');
+    const needsSwitchBtns = document.querySelectorAll('.button-options[data-group-name="needs_switch"] .option-btn');
+    const switchVersionGroup = document.getElementById('switch-version-group');
+
+    // Seleção exclusiva para TIPO
+    tipoBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tipoBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            // Só mostra os parâmetros do TIPO 1 por enquanto
+            if (btn.dataset.value === 'TIPO 1') {
+                tipo1Params.style.display = 'block';
+                // (No futuro: tipo2Params.style.display = 'none'; ...)
+            } else {
+                tipo1Params.style.display = 'none';
+            }
+        });
+    });
+
+    // Seleção exclusiva para modelo do router
+    routerBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            routerBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            // Se for HUAWEI, mostra grupo de versão
+            if (btn.dataset.value === 'HUAWEI') {
+                huaweiVersionGroup.style.display = 'block';
+            } else {
+                huaweiVersionGroup.style.display = 'none';
+            }
+        });
+    });
+
+    // Seleção exclusiva para precisa de switch
+    needsSwitchBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            needsSwitchBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            // Se SIM, mostra grupo de versão do switch
+            if (btn.dataset.value === 'SIM') {
+                switchVersionGroup.style.display = 'block';
+            } else {
+                switchVersionGroup.style.display = 'none';
+            }
+        });
+    });
 
     function createInfoItem(key, labelText, valueText = '-') {
         const infoItemDiv = document.createElement('div');

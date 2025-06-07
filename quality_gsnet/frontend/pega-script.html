@@ -35,75 +35,71 @@
 
                 <section class="column column-params">
                     <h2>Parâmetros para Script</h2>
-                    <!-- Restante do HTML da coluna de parâmetros (opções de link, owner, etc.) permanece o mesmo -->
                     <div class="options-container">
                         <div class="parameter-group">
-                            <label class="parameter-label">Qual o Link?</label>
-                            <div class="button-options" data-group-name="linkNovo">
-                                <button type="button" class="option-btn selected" data-value="LINK OI">LINK OI</button>
-                                <button type="button" class="option-btn" data-value="LINK VIVO">LINK VIVO</button>
+                            <label class="parameter-label">Selecione o Tipo:</label>
+                            <div class="button-options" data-group-name="tipo_script">
+                                <button type="button" class="option-btn selected" data-value="TIPO 1">TIPO 1</button>
+                                <button type="button" class="option-btn" data-value="TIPO 2">TIPO 2</button>
+                                <button type="button" class="option-btn" data-value="TIPO 3">TIPO 3</button>
                             </div>
                         </div>
-                        <div class="parameter-group">
-                            <label class="parameter-label">Quem e OWN?</label>
-                            <div class="button-options" data-group-name="ownerNovo">
-                                <button type="button" class="option-btn selected" data-value="OWNER OI">OWNER OI</button>
-                                <button type="button" class="option-btn" data-value="OWNER SECNET">OWNER SECNET</button>
+                        <div id="tipo1-params" style="display:block;">
+                            <div class="parameter-group">
+                                <label class="parameter-label">Modelo do router:</label>
+                                <div class="button-options" data-group-name="router_model">
+                                    <button type="button" class="option-btn" data-value="HP">HP</button>
+                                    <button type="button" class="option-btn" data-value="HUAWEI">HUAWEI</button>
+                                    <button type="button" class="option-btn" data-value="CISCO">CISCO</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="parameter-group">
-                            <label class="parameter-label">Modelo do router?</label>
-                            <div class="button-options" data-group-name="router_model">
-                                <button type="button" class="option-btn selected" data-value="HP">HP</button>
-                                <button type="button" class="option-btn" data-value="HUAWEI">HUAWEI</button>
-                                <button type="button" class="option-btn" data-value="CISCO">CISCO</button>
+                            <div class="parameter-group" id="huawei-version-group" style="display:none;">
+                                <label class="parameter-label">Versão do Huawei:</label>
+                                <div class="button-options" data-group-name="huawei_version">
+                                    <button type="button" class="option-btn" data-value="V2R10">V2R10</button>
+                                    <button type="button" class="option-btn" data-value="V2R7">V2R7</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="parameter-group">
-                            <label class="parameter-label">Precisa de switch?</label>
-                            <div class="button-options" data-group-name="needs_switch">
-                                <button type="button" class="option-btn selected" data-value="SIM">SIM</button>
-                                <button type="button" class="option-btn" data-value="NÃO">NÃO</button>
+                            <div class="parameter-group">
+                                <label class="parameter-label">Precisa de switch?</label>
+                                <div class="button-options" data-group-name="needs_switch">
+                                    <button type="button" class="option-btn" data-value="SIM">SIM</button>
+                                    <button type="button" class="option-btn" data-value="NÃO">NÃO</button>
+                                </div>
+                            </div>
+                            <div class="parameter-group" id="switch-version-group" style="display:none;">
+                                <label class="parameter-label">Versão do Switch:</label>
+                                <div class="button-options" data-group-name="switch_version">
+                                    <button type="button" class="option-btn" data-value="HUAWEI 5700">HUAWEI 5700</button>
+                                    <button type="button" class="option-btn" data-value="HUAWEI 2700 (Quidway)">HUAWEI 2700 (Quidway)</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="input-grid">
-                        <div class="input-group">
-                            <label for="input-ip-wan-router" class="parameter-label">IP WAN Roteador (Novo):</label>
-                            <input type="text" id="input-ip-wan-router" class="param-input">
+                    <h2 style="text-align:center; color:#F39C12; margin-top:32px;">Insira os IPS</h2>
+                    <div class="ips-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 24px;">
+                        <div style="flex:1; min-width:220px; max-width:240px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">CODIGO UL</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP SWITCH</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP LOOPBACK PRIM</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
                         </div>
-                        <div class="input-group">
-                            <label for="input-ip-lan-router" class="parameter-label">IP LAN Roteador (Novo Gateway TFLs):</label>
-                            <input type="text" id="input-ip-lan-router" class="param-input">
+                        <div style="flex:1; min-width:220px; max-width:240px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP LOOPBACK10</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP SWITCH ROUTER (SEN)</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP WAN PRIMARIO</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
                         </div>
-                        <div class="input-group">
-                            <label for="input-hostname-router" class="parameter-label">Hostname Roteador (se diferente do Link):</label>
-                            <input type="text" id="input-hostname-router" class="param-input">
+                        <div style="flex:1; min-width:220px; max-width:240px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP REDE VLAN</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
+                            <label style="display:block; font-weight:bold; background:#111; color:#fff; padding:2px 8px; margin-bottom:2px;">IP REDE SWITCH</label>
+                            <input type="text" class="ip-input" style="width:100%; height:48px; font-size:1.2em; border:2px solid #F39C12; background:#222; color:#fff; margin-bottom:12px;">
                         </div>
-                         <div class="input-group">
-                            <label for="input-firmware-router" class="parameter-label">Firmware Router (Novo):</label>
-                            <input type="text" id="input-firmware-router" class="param-input">
-                        </div>
-                        <div class="input-group">
-                            <label for="input-serial-router" class="parameter-label">Serial Router (Novo):</label>
-                            <input type="text" id="input-serial-router" class="param-input">
-                        </div>
-                        <div class="input-group switch-conditional">
-                            <label for="input-modelo-switch" class="parameter-label">Modelo Switch (Novo):</label>
-                            <input type="text" id="input-modelo-switch" class="param-input">
-                        </div>
-                        <div class="input-group switch-conditional">
-                            <label for="input-serial-switch" class="parameter-label">Serial Switch (Novo):</label>
-                            <input type="text" id="input-serial-switch" class="param-input">
-                        </div>
-                         <div class="input-group switch-conditional">
-                            <label for="input-firmware-switch" class="parameter-label">Firmware Switch (Novo):</label>
-                            <input type="text" id="input-firmware-switch" class="param-input">
-                        </div>
-                    </div>
-                    <div class="input-group full-width">
-                        <label for="input-observacoes" class="parameter-label">Observações:</label>
-                        <textarea id="input-observacoes" class="param-input" rows="3"></textarea>
                     </div>
                     <button id="generate-script-btn" class="generate-btn btn">Gerar Script</button>
                     <h3>Script Gerado:</h3>

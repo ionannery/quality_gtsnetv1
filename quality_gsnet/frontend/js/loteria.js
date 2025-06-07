@@ -88,33 +88,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Image Preview Logic ---
-    const imageInputs = [
-        { inputId: 'imagem-evidencia-1', previewId: 'preview-imagem-1' },
-        { inputId: 'imagem-evidencia-2', previewId: 'preview-imagem-2' },
-        { inputId: 'imagem-evidencia-3', previewId: 'preview-imagem-3' },
-        { inputId: 'imagem-evidencia-4', previewId: 'preview-imagem-4' },
-    ];
-
-    imageInputs.forEach(item => {
-        const inputElement = document.getElementById(item.inputId);
-        const previewElement = document.getElementById(item.previewId);
-        if (inputElement && previewElement) {
-            inputElement.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        previewElement.src = e.target.result;
-                        previewElement.style.display = 'block';
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    previewElement.src = '#';
-                    previewElement.style.display = 'none';
-                }
+    const imageInput = document.getElementById('imagens-evidencia');
+    const previewDiv = document.getElementById('preview-imagens');
+    let allImageFiles = [];
+    if (imageInput && previewDiv) {
+        imageInput.addEventListener('change', (event) => {
+            // Adiciona novas imagens ao array, sem remover as anteriores
+            const newFiles = Array.from(event.target.files);
+            allImageFiles = allImageFiles.concat(newFiles);
+            // Remove duplicatas (por nome e tamanho)
+            allImageFiles = allImageFiles.filter((file, idx, arr) =>
+                arr.findIndex(f => f.name === file.name && f.size === file.size) === idx
+            );
+            // Atualiza o preview
+            previewDiv.innerHTML = '';
+            allImageFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '120px';
+                    img.style.margin = '4px';
+                    img.style.borderRadius = '8px';
+                    previewDiv.appendChild(img);
+                };
+                reader.readAsDataURL(file);
             });
-        }
-    });
+            // Limpa o input para permitir adicionar a mesma imagem novamente se desejar
+            imageInput.value = '';
+        });
+    }
 
 
     // --- Form Validation ---
@@ -392,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     0: { 
                         fontStyle: 'bold', 
                         cellWidth: 65,
-                        fillColor: PDF_COLORS.very_light_gray_rgb
+                        fillColor: PDF_COLORS.medium_gray_rgb // Fundo mais escuro para rótulo
                     }, 
                     1: { 
                         cellWidth: 'auto', 
@@ -408,13 +411,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const hasSecondaryData = data.data_secundario || data.oficio_secundario || data.designador_secundario || data.tecnologia_secundario || data.latencia_secundario || data.perda_pacotes_secundario || data.comutacao_principal || data.largura_banda_secundario || data.ip_loopback_secundario || data.acesso_ultima_milha_secundario;
 
             if (hasSecondaryData) {
-                if (yPos + 80 > pageHeight - margin) {
+                if (doc.internal.getNumberOfPages() < 2) {
                     doc.addPage();
-                    yPos = margin;
                 } else {
-                     yPos += 5;
+                    doc.setPage(2);
                 }
-                
+                yPos = margin;
                 yPos = drawHeaderRectangle(
                     ["DADOS ACESSO SECUNDÁRIO / CONTINGÊNCIA"],
                     margin, yPos, pageWidth - (margin * 2), doc, 
@@ -463,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         0: { 
                             fontStyle: 'bold', 
                             cellWidth: 65,
-                            fillColor: PDF_COLORS.very_light_gray_rgb
+                            fillColor: PDF_COLORS.medium_gray_rgb // Fundo mais escuro para rótulo
                         },
                         1: { 
                             cellWidth: 'auto', 
@@ -477,13 +479,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 yPos = doc.lastAutoTable.finalY + 10;
             }
 
-            if (yPos + 50 > pageHeight - margin) {
-                doc.addPage();
-                yPos = margin;
-            } else {
-                yPos += 5; 
+            if (doc.internal.getNumberOfPages() < 3) {
+                while (doc.internal.getNumberOfPages() < 3) doc.addPage();
             }
-
+            doc.setPage(3);
+            yPos = margin;
             yPos = drawHeaderRectangle(
                 ["EVIDÊNCIAS"],
                 margin, yPos, pageWidth - (margin * 2), doc, 
@@ -496,7 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             );
             yPos += 3;
-
             yPos = drawHeaderRectangle(
                 [data.tempo_convergencia_tfl || "Tempo de Convergência - TFL (ARP) - DATA E HORÁRIO NÃO INFORMADO"],
                 margin, yPos, pageWidth - (margin * 2), doc, 
@@ -521,33 +520,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 { label: "DISP CLOCK BACKUP", value: data.evidencia_disp_clock_backup },
             ];
 
+            const evidenceBlockMargin = 6;
             evidenceFields.forEach(field => {
                 if (!field.value || field.value.trim() === "") return;
-
-                const labelHeight = 6; 
-                const textLines = doc.splitTextToSize(field.value || "-", pageWidth - (margin * 2));
-                const textBlockHeight = textLines.length * 3.5; 
-                const totalBlockHeight = labelHeight + textBlockHeight + 4; 
-
-                if (yPos + totalBlockHeight > pageHeight - margin) { 
+                const label = field.label;
+                const value = field.value;
+                const fontSize = 10;
+                const contentFontSize = 8.5;
+                const blockWidth = pageWidth - (margin * 2);
+                const blockPadding = 4;
+                const labelHeight = fontSize * 0.352778 + 2;
+                const textLines = doc.splitTextToSize(value || "-", blockWidth - (blockPadding * 2));
+                const textBlockHeight = textLines.length * 3.5;
+                const blockHeight = labelHeight + textBlockHeight + (blockPadding * 2);
+                if (yPos + blockHeight + evidenceBlockMargin > pageHeight - margin) {
                     doc.addPage();
                     yPos = margin;
                 }
-                yPos = addEvidenceText(field.label, field.value, margin, yPos, doc, pageWidth - margin);
+                // NÃO desenha borda!
+                // Título
+                doc.setFontSize(fontSize);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor.apply(doc, PDF_COLORS.orange_rgb);
+                doc.text(label, margin + blockPadding, yPos + blockPadding + fontSize * 0.352778, { align: 'left' });
+                // Espaço maior entre título e conteúdo
+                let contentY = yPos + blockPadding + labelHeight + 6; // 6px extra
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(contentFontSize);
+                doc.setTextColor.apply(doc, PDF_COLORS.dark_gray_rgb);
+                textLines.forEach(line => {
+                    doc.text(line, margin + blockPadding, contentY, { align: 'left' });
+                    contentY += 3.5;
+                });
+                yPos += blockHeight + evidenceBlockMargin;
             });
             
-            const imageFiles = [
-                document.getElementById('imagem-evidencia-1').files[0],
-                document.getElementById('imagem-evidencia-2').files[0],
-                document.getElementById('imagem-evidencia-3').files[0],
-                document.getElementById('imagem-evidencia-4').files[0],
-            ].filter(file => file); 
-
-            if (imageFiles.length > 0) {
-                if (yPos + 20 > pageHeight - margin) {
-                    doc.addPage();
-                    yPos = margin;
-                }
+            if (allImageFiles.length > 0) {
+                doc.addPage();
+                yPos = margin;
                 
                 yPos = drawHeaderRectangle(
                     ["FOTOS"],
@@ -562,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 );
                 yPos += 8; 
 
-                for (const file of imageFiles) {
+                for (const file of allImageFiles) {
                     try {
                         const imageDataUrl = await readFileAsDataURL(file);
                         const imgProps = doc.getImageProperties(imageDataUrl);
