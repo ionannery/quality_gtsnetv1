@@ -22,7 +22,7 @@ O Quality GTSNet é uma aplicação web composta por um backend Node.js/Express 
 - Buscar dados de Unidades Lotéricas a partir de uma base Excel.
 - Gerar scripts de configuração personalizados para equipamentos de rede.
 - Gerar relatórios em PDF com logs, evidências e imagens.
-- Upload de imagens como evidências fotográficas.
+- Upload de múltiplas imagens como evidências fotográficas (sem limite fixo).
 - Interface responsiva e intuitiva para uso em campo.
 
 ---
@@ -35,7 +35,7 @@ quality_gsnet/
 │   ├── package.json
 │   ├── server.js
 │   ├── data/
-│   │   └── lotericas_data.xlsx
+│   │   └── lotericas_data2.xlsx
 │   └── routes/
 │       └── api.js
 └── frontend/
@@ -104,13 +104,17 @@ quality_gsnet/
 - Permite selecionar parâmetros (link, owner, modelo, etc.) e preencher dados adicionais.
 - Gera script de configuração customizado, pronto para uso.
 - Copia o script para a área de transferência com um clique.
+- Os rótulos dos campos exibidos podem ser facilmente personalizados no frontend.
 
 ### Relatório Lotérica
 
 - Formulário completo para dados de acesso primário e secundário.
-- Campos para logs de teste, evidências e upload de até 4 imagens.
+- Campos para logs de teste, evidências e upload de múltiplas imagens (sem limite fixo).
+- Preview incremental de imagens: ao adicionar uma nova foto, as anteriores permanecem visíveis.
 - Geração de PDF estilizado, pronto para impressão ou envio.
 - PDF inclui logs, tabelas, imagens e informações detalhadas.
+- Evidências sempre iniciam na página 3 do PDF, fotos iniciam em uma nova página após as evidências.
+- Layout do PDF aprimorado: campos de rótulo com fundo escuro, espaçamento visual melhorado.
 
 ---
 
@@ -123,7 +127,7 @@ quality_gsnet/
   - `GET /api/ul-data/:ulCode`: Busca dados da UL no Excel por código, designador, CPE ou nome.
   - `POST /api/generate-script`: Gera script baseado nos dados da UL e parâmetros enviados pelo frontend.
 - Leitura do Excel via [xlsx](https://www.npmjs.com/package/xlsx).
-- O arquivo de dados deve estar em [backend/data/lotericas_data.xlsx](backend/data/lotericas_data.xlsx).
+- O arquivo de dados deve estar em [backend/data/lotericas_data2.xlsx](backend/data/lotericas_data2.xlsx).
 - Cache de dados para performance.
 
 ### Frontend
@@ -135,22 +139,23 @@ quality_gsnet/
   - [frontend/js/main.js](frontend/js/main.js): Funções globais.
 - Geração de PDF usando [jsPDF](https://github.com/parallax/jsPDF) e [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable).
 - Upload e preview de imagens antes da geração do PDF.
+- Preview de imagens permite adicionar várias fotos incrementalmente, sem remover as anteriores.
 
 ---
 
 ## Personalização dos Dados
 
 - **Base Excel:**  
-  Atualize o arquivo [backend/data/lotericas_data.xlsx](backend/data/lotericas_data.xlsx) conforme necessário.
+  Atualize o arquivo [backend/data/lotericas_data.xlsx](backend/data/lotericas_data2.xlsx) conforme necessário.
 - **Colunas obrigatórias:**  
-  Certifique-se de que as colunas do Excel correspondam aos campos esperados no código (ex: `codigoulbuscavel`, `NomePonto`, `loopback_principal`, etc).
+  Certifique-se de que as colunas do Excel correspondam aos campos esperados no código (ex: `codigoulbuscavel`, `nomeponto`, `loopback_principal`, etc).
 - **Mapeamento de campos:**  
   O mapeamento entre colunas do Excel e campos exibidos pode ser ajustado em [frontend/js/pega-script.js](frontend/js/pega-script.js).
-
----
-
-## Licença
-
-Este projeto é distribuído sob a licença MIT. Consulte o arquivo LICENSE para mais detalhes.
+- **Rótulos personalizados:**  
+  Os nomes exibidos no frontend podem ser facilmente alterados no objeto `columnDisplayMap` do arquivo JS correspondente.
+- **Upload de imagens:**  
+  Para adicionar várias imagens, basta selecionar múltiplos arquivos ou adicionar incrementalmente. As imagens permanecem no preview até a geração do PDF.
+- **Remoção de imagens:**  
+  (Opcional) Caso deseje implementar a remoção de imagens do preview antes de gerar o PDF, solicite a funcionalidade.
 
 ---
