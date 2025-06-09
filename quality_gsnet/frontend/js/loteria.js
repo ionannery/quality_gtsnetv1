@@ -123,15 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Form Validation ---
+    // Removido: latencia-principal, perda-pacotes-principal, latencia-secundario, perda-pacotes-secundario, comutacao-secundario
     const numericFieldsToValidate = [
-        // Primary
-        { id: 'latencia-principal', max: 150, message: 'Latência Principal deve ser <= 150ms.' },
-        { id: 'perda-pacotes-principal', max: 1, step: 0.1, message: 'Perda de Pacotes Principal deve ser <= 1%.' },
-        { id: 'comutacao-secundario', max: 60, message: 'Comutação p/ Secundário deve ser <= 60s.' },
+        // Apenas validações de banda e comutação principal permanecem
         { id: 'largura-banda-principal', min: 512, message: 'Largura de Banda Principal deve ser >= 512 Kbps.' },
-        // Secondary
-        { id: 'latencia-secundario', max: 400, message: 'Latência Contingência deve ser <= 400ms.' },
-        { id: 'perda-pacotes-secundario', max: 1, step: 0.1, message: 'Perda de Pacotes Contingência deve ser <= 1%.' },
         { id: 'comutacao-principal', max: 60, message: 'Comutação p/ Principal deve ser <= 60s.' },
         { id: 'largura-banda-secundario', min: 512, message: 'Largura de Banda Contingência deve ser >= 512 Kbps.' }
     ];
@@ -240,10 +235,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 data[key.replace(/-/g, '_')] = value; 
             });
 
+            const margin = 15;
             const pageHeight = doc.internal.pageSize.getHeight();
             const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 15;
-            let yPos = margin;
+            yPos = margin;
 
             const drawHeaderRectangle = (textLines, x, y, width, docInstance, options = {}) => {
                 const fontSize = options.fontSize || 12;
@@ -314,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const textToSplit = textContent || "-";
                 const splitText = docInstance.splitTextToSize(textToSplit, maxWidth - x);
 
+                const lineHeight = 3.5;
                 splitText.forEach(line => {
                     if (currentY > pageHeight - margin - 5) { 
                         docInstance.addPage();
@@ -327,8 +323,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         docInstance.setFont(undefined, 'normal');
                         docInstance.setTextColor.apply(docInstance, PDF_COLORS.dark_gray_rgb);
                     }
+                    if (currentY + lineHeight > pageHeight - margin) {
+                        docInstance.addPage();
+                        currentY = margin;
+                    }
                     docInstance.text(line, x, currentY);
-                    currentY += 3.5;
+                    currentY += lineHeight;
                 });
                 
                 return currentY + 4;
@@ -482,36 +482,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 yPos = doc.lastAutoTable.finalY + 10;
             }
 
-            if (doc.internal.getNumberOfPages() < 3) {
-                while (doc.internal.getNumberOfPages() < 3) doc.addPage();
-            }
+            // Garante que está na página 3 antes das evidências
+            while (doc.internal.getNumberOfPages() < 3) doc.addPage();
             doc.setPage(3);
             yPos = margin;
+
+            // TÍTULO "EVIDÊNCIAS"
             yPos = drawHeaderRectangle(
                 ["EVIDÊNCIAS"],
-                margin, yPos, pageWidth - (margin * 2), doc, 
-                { 
-                    fontSize: 14, 
+                margin, yPos, pageWidth - (margin * 2), doc,
+                {
+                    fontSize: 14,
                     vPadding: 5,
                     fillColor: PDF_COLORS.orange_rgb,
                     textColor: PDF_COLORS.black_rgb,
-                    borderColor: PDF_COLORS.black_rgb // Alterado para preto
+                    borderColor: PDF_COLORS.black_rgb
                 }
             );
-            yPos += 3;
-            yPos = drawHeaderRectangle(
-                [data.tempo_convergencia_tfl || "Tempo de Convergência - TFL (ARP) - DATA E HORÁRIO NÃO INFORMADO"],
-                margin, yPos, pageWidth - (margin * 2), doc, 
-                { 
-                    fontSize: 10, 
-                    fontStyle: 'normal', 
-                    vPadding: 4,
-                    fillColor: PDF_COLORS.very_light_gray_rgb,
-                    textColor: PDF_COLORS.dark_gray_rgb,
-                    borderColor: PDF_COLORS.black_rgb // Alterado para preto
-                }
-            );
-            yPos += 7;
+            yPos += 3; // <-- Aqui você pode aumentar para, por exemplo:
+            yPos += 10; // Deixa um espaço maior antes do "TESTE DE COMUTAÇÃO"
+
+            // Para cada evidência:
+           // yPos = desenharEvidencia(doc, data.tempo_convergencia_tfl || "Tempo de Convergência - TFL (ARP) - DATA E HORÁRIO NÃO INFORMADO", yPos, margin, pageWidth, pageHeight);
 
             const evidenceFields = [
                 { label: "TESTE DE COMUTAÇÃO", value: data.evidencia_teste_comutacao },
@@ -524,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
 
             const evidenceBlockMargin = 6;
+
             evidenceFields.forEach(field => {
                 if (!field.value || field.value.trim() === "") return;
                 const label = field.label;
@@ -533,29 +526,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 const blockWidth = pageWidth - (margin * 2);
                 const blockPadding = 4;
                 const labelHeight = fontSize * 0.352778 + 2;
-                const textLines = doc.splitTextToSize(value || "-", blockWidth - (blockPadding * 2));
-                const textBlockHeight = textLines.length * 3.5;
-                const blockHeight = labelHeight + textBlockHeight + (blockPadding * 2);
-                if (yPos + blockHeight + evidenceBlockMargin > pageHeight - margin) {
+                const lines = doc.splitTextToSize(value || "-", blockWidth - (blockPadding * 2));
+                const lineHeight = 3.5;
+
+                if (yPos + labelHeight + blockPadding * 2 > pageHeight - margin) {
                     doc.addPage();
                     yPos = margin;
                 }
-                // NÃO desenha borda!
-                // Título
                 doc.setFontSize(fontSize);
                 doc.setFont(undefined, 'bold');
                 doc.setTextColor.apply(doc, PDF_COLORS.orange_rgb);
                 doc.text(label, margin + blockPadding, yPos + blockPadding + fontSize * 0.352778, { align: 'left' });
-                // Espaço maior entre título e conteúdo
-                let contentY = yPos + blockPadding + labelHeight + 6; // 6px extra
+
+                let contentY = yPos + blockPadding + labelHeight + 6;
                 doc.setFont(undefined, 'normal');
                 doc.setFontSize(contentFontSize);
                 doc.setTextColor.apply(doc, PDF_COLORS.dark_gray_rgb);
-                textLines.forEach(line => {
+
+                lines.forEach(line => {
+                    if (contentY + lineHeight > pageHeight - margin) {
+                        doc.addPage();
+                        contentY = margin + blockPadding + labelHeight + 6;
+                        doc.setFontSize(fontSize);
+                        doc.setFont(undefined, 'bold');
+                        doc.setTextColor.apply(doc, PDF_COLORS.orange_rgb);
+                        doc.text(label + " (continuação)", margin + blockPadding, margin + blockPadding + fontSize * 0.352778, { align: 'left' });
+                        doc.setFont(undefined, 'normal');
+                        doc.setFontSize(contentFontSize);
+                        doc.setTextColor.apply(doc, PDF_COLORS.dark_gray_rgb);
+                    }
                     doc.text(line, margin + blockPadding, contentY, { align: 'left' });
-                    contentY += 3.5;
+                    contentY += lineHeight;
                 });
-                yPos += blockHeight + evidenceBlockMargin;
+
+                yPos = contentY + evidenceBlockMargin;
             });
             
             if (allImageFiles.length > 0) {
@@ -661,5 +665,19 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onerror = error => reject(error);
             reader.readAsDataURL(file);
         });
+    }
+
+    function desenharEvidencia(doc, texto, yPos, margin, pageWidth, pageHeight) {
+        const lines = doc.splitTextToSize(texto, pageWidth - 2 * margin);
+        const lineHeight = 5.5;
+        lines.forEach(line => {
+            if (yPos + lineHeight > pageHeight - margin) {
+                doc.addPage();
+                yPos = margin;
+            }
+            doc.text(line, margin, yPos);
+            yPos += lineHeight;
+        });
+        return yPos;
     }
 });

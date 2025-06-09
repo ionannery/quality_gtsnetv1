@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Relatórios - Quality GTSNet</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1>Buscar e Baixar Relatórios</h1>
+            <a href="index.html" class="btn" style="margin-top:1rem;">Voltar para Home</a>
+        </header>
+        <main>
+            <section class="busca-relatorios">
+                <h2>Filtrar Relatórios</h2>
+                <form class="busca-form" onsubmit="event.preventDefault(); buscarRelatorios(
+                    document.getElementById('ul-input').value, 
+                    document.getElementById('data-input').value
+                );">
+                    <input id="ul-input" class="form-input" placeholder="Código UL">
+                    <input id="data-input" class="form-input" type="date" placeholder="Data">
+                    <button id="buscar-btn" class="btn search-btn" type="submit">Buscar Relatórios</button>
+                </form>
+                <ul id="lista-relatorios"></ul>
+            </section>
+        </main>
+        <footer class="main-footer">
+            <p>&copy; 2025 Quality GTSNet. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+    <script src="js/busca-relatorios.js"></script>
+</body>
+</html>

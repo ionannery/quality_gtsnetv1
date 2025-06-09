@@ -278,4 +278,71 @@ router.post('/generate-script', (req, res) => {
     res.send(script);
 });
 
+const reportsDir = '/home/ubuntu/reports';
+
+// Utilitário para extrair data do nome do arquivo (assumindo padrão UL_TIMESTAMP_UUID.pdf)
+function extractDateFromFilename(filename) {
+  const parts = filename.split('_');
+  if (parts.length < 3) return null;
+  const timestamp = parseInt(parts[1]);
+  if (isNaN(timestamp)) return null;
+  const date = new Date(timestamp);
+  return date.toISOString().slice(0, 10);
+}
+
+// Listar relatórios por UL e/ou data
+router.get('/list-reports', (req, res) => {
+  const { ulCode, date } = req.query;
+  const reportsDir = '/home/ubuntu/reports';
+  if (!fs.existsSync(reportsDir)) return res.json([]);
+
+  let files = fs.readdirSync(reportsDir).filter(f => f.endsWith('.pdf'));
+
+  if (ulCode) {
+    files = files.filter(f => f.startsWith(ulCode + '_'));
+  }
+  if (date) {
+    files = files.filter(f => extractDateFromFilename(f) === date);
+  }
+
+  const result = files.map(f => ({
+    fileName: f,
+    ulCode: f.split('_')[0],
+    date: (() => {
+      const parts = f.split('_');
+      if (parts.length < 3) return null;
+      const timestamp = parseInt(parts[1]);
+      if (isNaN(timestamp)) return null;
+      return new Date(timestamp).toISOString().slice(0, 10);
+    })(),
+    url: `/api/download-report/${encodeURIComponent(f)}`
+  }));
+
+  res.json(result);
+});
+
+// Download de relatório por nome de arquivo
+router.get('/download-report/:fileName', (req, res) => {
+  const fileName = req.params.fileName;
+  const filePath = path.join(reportsDir, fileName);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ message: 'Relatório não encontrado.' });
+  }
+  res.download(filePath);
+});
+
+router.post('/upload-report', (req, res) => {
+  const { ulCode, pdfBase64 } = req.body;
+  if (!ulCode || !pdfBase64) {
+    return res.status(400).json({ message: 'Dados insuficientes.' });
+  }
+  const fileName = `${ulCode}_${Date.now()}.pdf`;
+  const filePath = path.join(reportsDir, fileName);
+  const base64Data = pdfBase64.replace(/^data:application\/pdf;base64,/, "");
+  fs.writeFile(filePath, base64Data, 'base64', (err) => {
+    if (err) return res.status(500).json({ message: 'Erro ao salvar PDF.' });
+    res.json({ message: 'Relatório salvo com sucesso.', fileName });
+  });
+});
+
 module.exports = router;
