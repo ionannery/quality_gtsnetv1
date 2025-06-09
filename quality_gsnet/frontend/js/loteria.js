@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         orange_rgb: [243, 156, 18],
         light_orange: '#FDEBD0',
         light_orange_rgb: [253, 235, 208],
+        dark_blue_rgb:[0,0,139],
         
         // Cores utilitárias
         white: '#FFFFFF',
@@ -340,8 +341,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 { 
                     fontSize: 14, 
                     vPadding: 5,
-                    fillColor: PDF_COLORS.orange_rgb,
-                    textColor: PDF_COLORS.black_rgb,
+                    fillColor: PDF_COLORS.dark_blue_rgb,
+                    textColor: PDF_COLORS.white_rgb,
                     borderColor: PDF_COLORS.black_rgb // Alterado para preto
                 }
             );
@@ -425,8 +426,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     { 
                         fontSize: 12, 
                         vPadding: 4,
-                        fillColor: PDF_COLORS.orange_rgb,
-                        textColor: PDF_COLORS.black_rgb,
+                        fillColor: PDF_COLORS.dark_blue_rgb,
+                        textColor: PDF_COLORS.white_rgb,
                         borderColor: PDF_COLORS.black_rgb // Alterado para preto
                     }
                 );
@@ -494,8 +495,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 {
                     fontSize: 14,
                     vPadding: 5,
-                    fillColor: PDF_COLORS.orange_rgb,
-                    textColor: PDF_COLORS.black_rgb,
+                    fillColor: PDF_COLORS.dark_blue_rgb,
+                    textColor: PDF_COLORS.white_rgb,
                     borderColor: PDF_COLORS.black_rgb
                 }
             );
@@ -535,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 doc.setFontSize(fontSize);
                 doc.setFont(undefined, 'bold');
-                doc.setTextColor.apply(doc, PDF_COLORS.orange_rgb);
+                doc.setTextColor.apply(doc, PDF_COLORS.dark_blue_rgb);
                 doc.text(label, margin + blockPadding, yPos + blockPadding + fontSize * 0.352778, { align: 'left' });
 
                 let contentY = yPos + blockPadding + labelHeight + 6;
@@ -549,7 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         contentY = margin + blockPadding + labelHeight + 6;
                         doc.setFontSize(fontSize);
                         doc.setFont(undefined, 'bold');
-                        doc.setTextColor.apply(doc, PDF_COLORS.orange_rgb);
+                        doc.setTextColor.apply(doc, PDF_COLORS.dark_blue_rgb);
                         doc.text(label + " (continuação)", margin + blockPadding, margin + blockPadding + fontSize * 0.352778, { align: 'left' });
                         doc.setFont(undefined, 'normal');
                         doc.setFontSize(contentFontSize);
@@ -572,8 +573,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     { 
                         fontSize: 14, 
                         vPadding: 5,
-                        fillColor: PDF_COLORS.orange_rgb,
-                        textColor: PDF_COLORS.black_rgb,
+                        fillColor: PDF_COLORS.dark_blue_rgb,
+                        textColor: PDF_COLORS.white_rgb,
                         borderColor: PDF_COLORS.black_rgb // Alterado para preto
                     }
                 );
