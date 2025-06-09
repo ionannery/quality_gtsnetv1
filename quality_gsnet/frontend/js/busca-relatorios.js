@@ -18,9 +18,13 @@ async function buscarRelatorios(ulCode, data) {
   }
   relatorios.forEach(r => {
     const li = document.createElement('li');
+    li.className = "relatorio-item";
     li.innerHTML = `
-      <b>UL:</b> ${r.ulCode} | <b>Data:</b> ${r.date} 
-      <button onclick="baixarRelatorio('${r.fileName}')">Baixar PDF</button>
+      <div class="relatorio-info">
+        <span><b>UL:</b> ${r.ulCode}</span>
+        <span><b>Data:</b> ${r.date ? r.date : '-'}</span>
+      </div>
+      <button class="btn btn-small" onclick="baixarRelatorio('${r.fileName}')">Baixar PDF</button>
     `;
     lista.appendChild(li);
   });

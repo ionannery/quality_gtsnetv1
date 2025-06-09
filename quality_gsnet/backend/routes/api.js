@@ -328,15 +328,18 @@ router.get('/download-report/:fileName', (req, res) => {
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ message: 'Relatório não encontrado.' });
   }
-  res.download(filePath);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+  fs.createReadStream(filePath).pipe(res);
 });
 
-router.post('/upload-report', (req, res) => {
+router.post('/upload-report', express.json({ limit: '10mb' }), (req, res) => {
   const { ulCode, pdfBase64 } = req.body;
   if (!ulCode || !pdfBase64) {
     return res.status(400).json({ message: 'Dados insuficientes.' });
   }
-  const fileName = `${ulCode}_${Date.now()}.pdf`;
+  const today = new Date().toISOString().slice(0, 10);
+  const fileName = `${ulCode}_${today}.pdf`;
   const filePath = path.join(reportsDir, fileName);
   const base64Data = pdfBase64.replace(/^data:application\/pdf;base64,/, "");
   fs.writeFile(filePath, base64Data, 'base64', (err) => {

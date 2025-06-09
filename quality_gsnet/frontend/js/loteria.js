@@ -651,6 +651,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fileName = `Relatorio_Transformacao_${data.codigo_ul || 'CODUL'}_${(data.data || new Date().toISOString().slice(0,10))}.pdf`;
                 doc.save(fileName);
                 displayGlobalMessage(`PDF "${fileName}" gerado com sucesso!`, 'success');
+
+                const pdfBase64 = doc.output('datauristring');
+                fetch('/api/upload-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ulCode: data.codigo_ul,
+                        pdfBase64: pdfBase64
+                    })
+                })
+                .then(res => res.json())
+                .then(resp => {
+                    if (resp.message) {
+                        displayGlobalMessage(resp.message, 'success');
+                    }
+                })
+                .catch(err => {
+                    displayGlobalMessage('Erro ao enviar PDF para o servidor.', 'error');
+                });
             } catch (saveError) {
                 console.error("Erro ao salvar o PDF:", saveError);
                 displayGlobalMessage('Erro ao salvar o PDF. Verifique o console para mais detalhes.', 'error');
