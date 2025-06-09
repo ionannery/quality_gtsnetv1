@@ -8,11 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
         dark_gray: '#333333',
         dark_gray_rgb: [51, 51, 51],
         medium_gray: '#666666',
-        medium_gray_rgb: [102, 102, 102],
-        light_gray: '#CCCCCC',
+        medium_gray_rgb: [135, 135, 135],
+        light_gray: '#CCCCCC',  
         light_gray_rgb: [204, 204, 204],
         very_light_gray: '#F5F5F5',
         very_light_gray_rgb: [245, 245, 245],
+        white_rgb: [255, 255, 255],
+        top_gray_rgb: [220, 220, 220],
         
         // Cores de destaque
         orange: '#F39C12',
@@ -339,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     fontSize: 14, 
                     vPadding: 5,
                     fillColor: PDF_COLORS.orange_rgb,
-                    textColor: PDF_COLORS.white_rgb,
+                    textColor: PDF_COLORS.black_rgb,
                     borderColor: PDF_COLORS.black_rgb // Alterado para preto
                 }
             );
@@ -384,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: primaryDataBody,
                 theme: 'grid', 
                 styles: {
-                    fontSize: 9,
+                    fontSize: 11,
                     cellPadding: 2, 
                     lineColor: PDF_COLORS.black_rgb, // Alterado para preto
                     lineWidth: 0.1,
@@ -395,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     0: { 
                         fontStyle: 'bold', 
                         cellWidth: 65,
-                        fillColor: PDF_COLORS.medium_gray_rgb // Fundo mais escuro para rótulo
+                        fillColor: PDF_COLORS.top_gray_rgb // Fundo mais escuro para rótulo
                     }, 
                     1: { 
                         cellWidth: 'auto', 
@@ -418,13 +420,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 yPos = margin;
                 yPos = drawHeaderRectangle(
-                    ["DADOS ACESSO SECUNDÁRIO / CONTINGÊNCIA"],
+                    ["DADOS ACESSO SECUNDÁRIO"],
                     margin, yPos, pageWidth - (margin * 2), doc, 
                     { 
                         fontSize: 12, 
                         vPadding: 4,
-                        fillColor: PDF_COLORS.light_orange_rgb,
-                        textColor: PDF_COLORS.dark_gray_rgb,
+                        fillColor: PDF_COLORS.orange_rgb,
+                        textColor: PDF_COLORS.black_rgb,
                         borderColor: PDF_COLORS.black_rgb // Alterado para preto
                     }
                 );
@@ -454,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: secondaryDataBody,
                     theme: 'grid',
                     styles: { 
-                        fontSize: 9, 
+                        fontSize: 11, 
                         cellPadding: 2, 
                         lineColor: PDF_COLORS.black_rgb, // Alterado para preto
                         lineWidth: 0.1, 
@@ -465,7 +467,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         0: { 
                             fontStyle: 'bold', 
                             cellWidth: 65,
-                            fillColor: PDF_COLORS.medium_gray_rgb // Fundo mais escuro para rótulo
+                            fillColor: PDF_COLORS.top_gray_rgb,// Fundo mais escuro para rótulo
+                            
                         },
                         1: { 
                             cellWidth: 'auto', 
@@ -491,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     fontSize: 14, 
                     vPadding: 5,
                     fillColor: PDF_COLORS.orange_rgb,
-                    textColor: PDF_COLORS.white_rgb,
+                    textColor: PDF_COLORS.black_rgb,
                     borderColor: PDF_COLORS.black_rgb // Alterado para preto
                 }
             );
@@ -525,8 +528,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!field.value || field.value.trim() === "") return;
                 const label = field.label;
                 const value = field.value;
-                const fontSize = 10;
-                const contentFontSize = 8.5;
+                const fontSize = 11;
+                const contentFontSize = 10;
                 const blockWidth = pageWidth - (margin * 2);
                 const blockPadding = 4;
                 const labelHeight = fontSize * 0.352778 + 2;
@@ -566,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         fontSize: 14, 
                         vPadding: 5,
                         fillColor: PDF_COLORS.orange_rgb,
-                        textColor: PDF_COLORS.white_rgb,
+                        textColor: PDF_COLORS.black_rgb,
                         borderColor: PDF_COLORS.black_rgb // Alterado para preto
                     }
                 );
@@ -634,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { align: 'right' }
                 );
                  doc.text(
-                    `Quality GTSNet - ${data.codigo_ul || 'UL'} - ${new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`,
+                    `${data.codigo_ul || 'UL'} - ${new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`,
                     margin,
                     pageHeight - 10
                 );
