@@ -9,55 +9,51 @@ document.addEventListener('DOMContentLoaded', () => {
         dark_gray_rgb: [51, 51, 51],
         medium_gray: '#666666',
         medium_gray_rgb: [135, 135, 135],
-        light_gray: '#CCCCCC',  
+        light_gray: '#CCCCCC',
         light_gray_rgb: [204, 204, 204],
         very_light_gray: '#F5F5F5',
         very_light_gray_rgb: [245, 245, 245],
         white_rgb: [255, 255, 255],
         top_gray_rgb: [220, 220, 220],
-        
+
         // Cores de destaque
         orange: '#F39C12',
         orange_rgb: [243, 156, 18],
         light_orange: '#FDEBD0',
         light_orange_rgb: [253, 235, 208],
-        dark_blue_rgb:[0,0,139],
-        
+        dark_blue_rgb: [0, 0, 139],
+
         // Cores utilitárias
         white: '#FFFFFF',
         white_rgb: [255, 255, 255],
         black: '#000000', // Cor preta para bordas
         black_rgb: [0, 0, 0], // RGB para preto
-        
+
         // Cores para alertas/erros
         red: '#E74C3C',
         red_rgb: [231, 76, 60]
     };
 
     // Assegure que jsPDF e autoTable estão carregados
-    // Verificação 1: Biblioteca principal jsPDF
     if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
         console.error('jsPDF (core) not loaded!');
-        if(generatePdfBtn) generatePdfBtn.disabled = true;
-        // Usar um alerta customizado ou mensagem no DOM em vez de alert()
-        displayGlobalMessage('Erro: A biblioteca principal de PDF (jsPDF) não pôde ser carregada. A geração de PDF está desabilitada.', 'error');
+        if (generatePdfBtn) generatePdfBtn.disabled = true;
+        displayGlobalMessage('Erro: A biblioteca principal de PDF (jsPDF) não pôde ser carregada.', 'error');
         return;
     }
 
-    // Atribui o construtor jsPDF a uma constante para uso claro
-    const { jsPDF } = window.jspdf; // window.jspdf.jsPDF é o construtor quando UMD é usado
-
-    // Verificação 2: Plugin jsPDF-AutoTable
-    // Crie uma instância temporária do jsPDF para verificar se o método autoTable está disponível
-    const tempDoc = new jsPDF(); // Usa o construtor jsPDF obtido
+    const {
+        jsPDF
+    } = window.jspdf;
+    const tempDoc = new jsPDF();
     if (typeof tempDoc.autoTable !== 'function') {
-         console.error('jsPDF-AutoTable not loaded or not attached to jsPDF prototype!');
-        if(generatePdfBtn) generatePdfBtn.disabled = true;
-        displayGlobalMessage('Erro: O plugin de tabelas para PDF (jsPDF-AutoTable) não pôde ser carregado. A geração de PDF está desabilitada.', 'error');
+        console.error('jsPDF-AutoTable not loaded!');
+        if (generatePdfBtn) generatePdfBtn.disabled = true;
+        displayGlobalMessage('Erro: O plugin de tabelas para PDF (jsPDF-AutoTable) não pôde ser carregado.', 'error');
         return;
     }
 
-    // --- Helper para mensagens globais (substitui alert) ---
+    // --- Helper para mensagens globais ---
     function displayGlobalMessage(message, type = 'info') {
         const alertDiv = document.createElement('div');
         alertDiv.textContent = message;
@@ -68,42 +64,35 @@ document.addEventListener('DOMContentLoaded', () => {
         alertDiv.style.padding = '15px';
         alertDiv.style.borderRadius = 'var(--border-radius)';
         alertDiv.style.boxShadow = 'var(--box-shadow)';
-        alertDiv.style.zIndex = '1001'; // Acima de outros elementos
+        alertDiv.style.zIndex = '1001';
         alertDiv.style.textAlign = 'center';
         alertDiv.style.maxWidth = '90%';
 
         if (type === 'error') {
             alertDiv.style.backgroundColor = 'var(--danger-color)';
             alertDiv.style.color = 'white';
-        } else if (type === 'success') {
-            alertDiv.style.backgroundColor = 'var(--success-color)';
-            alertDiv.style.color = 'white';
-        } else {
+        } else { // ... (código existente)
             alertDiv.style.backgroundColor = 'var(--primary-color)';
             alertDiv.style.color = 'white';
         }
-        
+
         document.body.appendChild(alertDiv);
         setTimeout(() => {
             alertDiv.remove();
         }, 5000);
     }
 
-
-    // --- Image Preview Logic ---
+    // --- Lógica de Preview de Imagem ---
     const imageInput = document.getElementById('imagens-evidencia');
     const previewDiv = document.getElementById('preview-imagens');
     let allImageFiles = [];
     if (imageInput && previewDiv) {
         imageInput.addEventListener('change', (event) => {
-            // Adiciona novas imagens ao array, sem remover as anteriores
             const newFiles = Array.from(event.target.files);
             allImageFiles = allImageFiles.concat(newFiles);
-            // Remove duplicatas (por nome e tamanho)
             allImageFiles = allImageFiles.filter((file, idx, arr) =>
                 arr.findIndex(f => f.name === file.name && f.size === file.size) === idx
             );
-            // Atualiza o preview
             previewDiv.innerHTML = '';
             allImageFiles.forEach(file => {
                 const reader = new FileReader();
@@ -117,16 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 reader.readAsDataURL(file);
             });
-            // Limpa o input para permitir adicionar a mesma imagem novamente se desejar
             imageInput.value = '';
         });
     }
 
 
-    // --- Form Validation ---
-    // Removido: latencia-principal, perda-pacotes-principal, latencia-secundario, perda-pacotes-secundario, comutacao-secundario
+    // --- Validação do Formulário ---
+    // ... (código de validação existente, sem alterações)
     const numericFieldsToValidate = [
-        // Apenas validações de banda e comutação principal permanecem
         { id: 'largura-banda-principal', min: 512, message: 'Largura de Banda Principal deve ser >= 512 Kbps.' },
         { id: 'comutacao-principal', max: 60, message: 'Comutação p/ Principal deve ser <= 60s.' },
         { id: 'largura-banda-secundario', min: 512, message: 'Largura de Banda Contingência deve ser >= 512 Kbps.' }
@@ -147,10 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let isValid = true;
         let errorMessage = '';
 
-        if (inputElement.value.trim() === '') { // Allow empty
+        if (inputElement.value.trim() === '') {
              if (errorElement) errorElement.textContent = '';
              inputElement.classList.remove('invalid');
-            return true; // Consider empty as valid for now, required check is separate
+            return true;
         }
 
         if (isNaN(value)) {
@@ -215,33 +202,151 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         return allValid;
     }
+    
+    // --- Função para converter SVG para Data URL (PNG) com cantos arredondados ---
+    function svgToDataURL(svgString, cornerRadiusPercent = 0) {
+        return new Promise((resolve, reject) => {
+            const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
 
-    // --- PDF Generation ---
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const scale = 3; // Renderiza em alta resolução para qualidade no PDF
+                const w = img.width * scale;
+                const h = img.height * scale;
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+
+                // Se um raio de canto for especificado, cria um clipe de máscara
+                if (cornerRadiusPercent > 0) {
+                    const r = Math.min(w, h) * cornerRadiusPercent;
+                    ctx.beginPath();
+                    ctx.moveTo(r, 0);
+                    ctx.arcTo(w, 0, w, h, r);
+                    ctx.arcTo(w, h, 0, h, r);
+                    ctx.arcTo(0, h, 0, 0, r);
+                    ctx.arcTo(0, 0, w, 0, r);
+                    ctx.closePath();
+                    ctx.clip();
+                }
+                
+                // Desenha a imagem (agora com a máscara, se aplicável)
+                ctx.drawImage(img, 0, 0, w, h);
+
+                URL.revokeObjectURL(url);
+                resolve(canvas.toDataURL('image/png'));
+            };
+
+            img.onerror = (e) => {
+                URL.revokeObjectURL(url);
+                reject(new Error('Falha ao carregar a imagem SVG.'));
+            };
+
+            img.src = url;
+        });
+    }
+
+    // --- Geração do PDF ---
     if (generatePdfBtn) {
-        generatePdfBtn.addEventListener('click', async () => { 
+        generatePdfBtn.addEventListener('click', async () => {
             if (!validateAllFields()) {
-                displayGlobalMessage('Por favor, corrija os erros no formulário antes de gerar o PDF. Campos obrigatórios não preenchidos ou com valores inválidos estão destacados.', 'error');
+                displayGlobalMessage('Por favor, corrija os erros no formulário antes de gerar o PDF.', 'error');
                 return;
             }
 
-            const doc = new jsPDF({ 
-                orientation: 'p', 
-                unit: 'mm', 
-                format: 'a4' 
+            // Carrega o SVG do arquivo
+            const logoPath = 'src/maminfo.svg';
+            const logoImageDataUrl = await fetch(logoPath)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Erro de rede! Status: ${response.status}`);
+                    return response.text();
+                })
+                .then(svgText => {
+                    // Converte o SVG para PNG com 30% de arredondamento nos cantos
+                    return svgToDataURL(svgText, 0.3); 
+                })
+                .catch(err => {
+                    console.error(`Erro ao carregar o logo de "${logoPath}":`, err);
+                    displayGlobalMessage(`Não foi possível carregar o logo. Verifique se o caminho "${logoPath}" está correto.`, 'error');
+                    return null;
+                });
+
+            const doc = new jsPDF({
+                orientation: 'p',
+                unit: 'mm',
+                format: 'a4'
             });
 
             const formData = new FormData(form);
             const data = {};
             formData.forEach((value, key) => {
-                data[key.replace(/-/g, '_')] = value; 
+                data[key.replace(/-/g, '_')] = value;
             });
 
             const margin = 15;
             const pageHeight = doc.internal.pageSize.getHeight();
             const pageWidth = doc.internal.pageSize.getWidth();
-            yPos = margin;
+            let yPos = margin;
 
-            const drawHeaderRectangle = (textLines, x, y, width, docInstance, options = {}) => {
+            // =======================================================================
+            // CABEÇALHO COM LOGO E TÍTULO (LÓGICA ATUALIZADA)
+            // =======================================================================
+            const headerHeight = 22;
+            const logoPadding = 2;
+            // Define uma caixa (bounding box) para a logo, com mais espaço horizontal
+            const logoBoxWidth = 30; 
+            const logoBoxHeight = 18;
+
+            doc.setFillColor.apply(doc, PDF_COLORS.dark_blue_rgb);
+            doc.setDrawColor.apply(doc, PDF_COLORS.black_rgb);
+            doc.setLineWidth(0.2);
+            doc.rect(margin, yPos, pageWidth - (margin * 2), headerHeight, 'FD');
+
+            let textStartX = margin;
+
+            if (logoImageDataUrl) {
+                const imgProps = doc.getImageProperties(logoImageDataUrl);
+                const aspectRatio = imgProps.width / imgProps.height;
+
+                // Calcula as dimensões da logo para caber na 'logoBox' mantendo a proporção
+                let logoDisplayWidth = logoBoxWidth;
+                let logoDisplayHeight = logoDisplayWidth / aspectRatio;
+
+                if (logoDisplayHeight > logoBoxHeight) {
+                    logoDisplayHeight = logoBoxHeight;
+                    logoDisplayWidth = logoDisplayHeight * aspectRatio;
+                }
+
+                const logoX = margin + logoPadding;
+                // Centraliza a logo verticalmente no cabeçalho
+                const logoY = yPos + (headerHeight - logoDisplayHeight) / 2;
+
+                doc.addImage(logoImageDataUrl, 'PNG', logoX, logoY, logoDisplayWidth, logoDisplayHeight);
+                
+                // Define o início do texto após a logo
+                textStartX = logoX + logoDisplayWidth + 5; // Aumentei o espaçamento
+            }
+
+            const headerText = ["DOCUMENTO DE TRANSFORMAÇÃO", "DE UNIDADE LOTÉRICAS"];
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor.apply(doc, PDF_COLORS.white_rgb);
+            
+            const textCenterX = textStartX + (pageWidth - margin - textStartX) / 2;
+            const textY1 = yPos + (headerHeight / 2) - 3;
+            const textY2 = yPos + (headerHeight / 2) + 4;
+
+            doc.text(headerText[0], textCenterX, textY1, { align: 'center' });
+            doc.text(headerText[1], textCenterX, textY2, { align: 'center' });
+
+            yPos += headerHeight;
+            yPos += 3;
+            // =======================================================================
+            
+            const ulInfo = `${data.codigo_ul || "CODIGO_UL"} - ${data.nome_ul || "NOME_UL"}`;
+             const drawHeaderRectangle = (textLines, x, y, width, docInstance, options = {}) => {
                 const fontSize = options.fontSize || 12;
                 const fontStyle = options.fontStyle || 'bold';
                 const align = options.align || 'center';
@@ -250,17 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lineHeightFactor = 1.2;
                 const fillColor = options.fillColor || null;
                 const textColor = options.textColor || PDF_COLORS.dark_gray_rgb;
-                const borderColor = options.borderColor || PDF_COLORS.black_rgb; // Alterado para preto
+                const borderColor = options.borderColor || PDF_COLORS.black_rgb;
                 const borderWidth = options.borderWidth || 0.2;
 
                 docInstance.setFontSize(fontSize);
                 docInstance.setFont(undefined, fontStyle);
 
-                if (!Array.isArray(textLines)) {
-                    textLines = [textLines];
-                }
+                if (!Array.isArray(textLines)) textLines = [textLines];
                 
-                const textBlockHeight = (textLines.length * fontSize * 0.352778 * lineHeightFactor) - ((fontSize * 0.352778 * lineHeightFactor) - (fontSize * 0.352778)); 
+                const textBlockHeight = (textLines.length * fontSize * 0.352778 * lineHeightFactor);
                 const rectHeight = textBlockHeight + (vPadding * 2);
 
                 docInstance.setDrawColor.apply(docInstance, borderColor);
@@ -278,14 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let currentY = y + vPadding + (fontSize * 0.352778);
 
                 textLines.forEach(line => {
-                    const textWidth = docInstance.getStringUnitWidth(line) * fontSize / docInstance.internal.scaleFactor;
-                    let textX = x + (width / 2); 
-                    if (align === 'left') {
-                        textX = x + padding;
-                    } else if (align === 'right') {
-                        textX = x + width - padding - textWidth;
-                    }
-                    docInstance.text(line, textX, currentY, { align: align });
+                    docInstance.text(line, x + (width/2), currentY, { align: 'center' });
                     currentY += (fontSize * 0.352778 * lineHeightFactor);
                 });
                 
@@ -293,75 +389,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 return y + rectHeight; 
             };
-            
-            const addEvidenceText = (label, textContent, x, startY, docInstance, maxWidth) => {
-                let currentY = startY;
-                
-                docInstance.setFontSize(10);
-                docInstance.setFont(undefined, 'bold');
-                docInstance.setTextColor.apply(docInstance, PDF_COLORS.orange_rgb);
-                docInstance.text(label, x, currentY);
-                currentY += 6; 
 
-                docInstance.setFont(undefined, 'normal');
-                docInstance.setFontSize(8.5);
-                docInstance.setTextColor.apply(docInstance, PDF_COLORS.dark_gray_rgb);
-                
-                const textToSplit = textContent || "-";
-                const splitText = docInstance.splitTextToSize(textToSplit, maxWidth - x);
 
-                const lineHeight = 3.5;
-                splitText.forEach(line => {
-                    if (currentY > pageHeight - margin - 5) { 
-                        docInstance.addPage();
-                        currentY = margin;
-                        docInstance.setFontSize(10);
-                        docInstance.setFont(undefined, 'bold');
-                        docInstance.setTextColor.apply(docInstance, PDF_COLORS.orange_rgb);
-                        docInstance.text(label + " (continuação)", x, currentY);
-                        currentY += 6;
-                        docInstance.setFontSize(8.5);
-                        docInstance.setFont(undefined, 'normal');
-                        docInstance.setTextColor.apply(docInstance, PDF_COLORS.dark_gray_rgb);
-                    }
-                    if (currentY + lineHeight > pageHeight - margin) {
-                        docInstance.addPage();
-                        currentY = margin;
-                    }
-                    docInstance.text(line, x, currentY);
-                    currentY += lineHeight;
-                });
-                
-                return currentY + 4;
-            };
-
-            yPos = drawHeaderRectangle(
-                ["DOCUMENTO DE TRANSFORMAÇÃO", "DE UNIDADE LOTÉRICAS"], 
-                margin, yPos, pageWidth - (margin * 2), doc, 
-                { 
-                    fontSize: 14, 
-                    vPadding: 5,
-                    fillColor: PDF_COLORS.dark_blue_rgb,
-                    textColor: PDF_COLORS.white_rgb,
-                    borderColor: PDF_COLORS.black_rgb // Alterado para preto
-                }
-            );
-            yPos += 3; 
-
-            const ulInfo = `${data.codigo_ul || "CODIGO_UL"} - ${data.nome_ul || "NOME_UL"}`;
             yPos = drawHeaderRectangle(
                 [ulInfo.toUpperCase()],
-                margin, yPos, pageWidth - (margin * 2), doc, 
-                { 
-                    fontSize: 11, 
+                margin, yPos, pageWidth - (margin * 2), doc, {
+                    fontSize: 11,
                     vPadding: 4,
                     fillColor: PDF_COLORS.very_light_gray_rgb,
                     textColor: PDF_COLORS.dark_gray_rgb,
-                    borderColor: PDF_COLORS.black_rgb // Alterado para preto
+                    borderColor: PDF_COLORS.black_rgb
                 }
             );
-            yPos += 7; 
+            yPos += 7;
 
+            // Restante do código de geração de tabelas e conteúdo...
+            // (Nenhuma alteração necessária abaixo desta linha)
             const primaryDataBody = [
                 ["Data:", data.data ? new Date(data.data + 'T00:00:00').toLocaleDateString('pt-BR') : "-"],
                 ["Número do Ofício:", data.oficio || "-"],
@@ -385,33 +428,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 startY: yPos,
                 head: [],
                 body: primaryDataBody,
-                theme: 'grid', 
+                theme: 'grid',
                 styles: {
                     fontSize: 11,
-                    cellPadding: 2, 
-                    lineColor: PDF_COLORS.black_rgb, // Alterado para preto
+                    cellPadding: 2,
+                    lineColor: PDF_COLORS.black_rgb,
                     lineWidth: 0.1,
-                    font: 'helvetica', 
+                    font: 'helvetica',
                     textColor: PDF_COLORS.dark_gray_rgb
                 },
                 columnStyles: {
-                    0: { 
-                        fontStyle: 'bold', 
+                    0: {
+                        fontStyle: 'bold',
                         cellWidth: 65,
-                        fillColor: PDF_COLORS.top_gray_rgb // Fundo mais escuro para rótulo
-                    }, 
-                    1: { 
-                        cellWidth: 'auto', 
+                        fillColor: PDF_COLORS.top_gray_rgb
+                    },
+                    1: {
+                        cellWidth: 'auto',
                         fontStyle: 'normal',
                         fillColor: PDF_COLORS.white_rgb
-                    } 
+                    }
                 },
-                margin: { left: margin, right: margin },
-                tableWidth: 'auto', 
+                margin: {
+                    left: margin,
+                    right: margin
+                },
+                tableWidth: 'auto',
             });
-            yPos = doc.lastAutoTable.finalY + 10; 
-
-            const hasSecondaryData = data.data_secundario || data.oficio_secundario || data.designador_secundario || data.tecnologia_secundario || data.latencia_secundario || data.perda_pacotes_secundario || data.comutacao_principal || data.largura_banda_secundario || data.ip_loopback_secundario || data.acesso_ultima_milha_secundario;
+            yPos = doc.lastAutoTable.finalY + 10;
+            
+            // ... (restante do código original para dados secundários, evidências, fotos, rodapé, etc.)
+            
+             const hasSecondaryData = data.data_secundario || data.oficio_secundario || data.designador_secundario || data.tecnologia_secundario || data.latencia_secundario || data.perda_pacotes_secundario || data.comutacao_principal || data.largura_banda_secundario || data.ip_loopback_secundario || data.acesso_ultima_milha_secundario;
 
             if (hasSecondaryData) {
                 if (doc.internal.getNumberOfPages() < 2) {
@@ -428,7 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         vPadding: 4,
                         fillColor: PDF_COLORS.dark_blue_rgb,
                         textColor: PDF_COLORS.white_rgb,
-                        borderColor: PDF_COLORS.black_rgb // Alterado para preto
+                        borderColor: PDF_COLORS.black_rgb
                     }
                 );
                 yPos += 7;
@@ -459,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     styles: { 
                         fontSize: 11, 
                         cellPadding: 2, 
-                        lineColor: PDF_COLORS.black_rgb, // Alterado para preto
+                        lineColor: PDF_COLORS.black_rgb,
                         lineWidth: 0.1, 
                         font: 'helvetica',
                         textColor: PDF_COLORS.dark_gray_rgb
@@ -468,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         0: { 
                             fontStyle: 'bold', 
                             cellWidth: 65,
-                            fillColor: PDF_COLORS.top_gray_rgb,// Fundo mais escuro para rótulo
+                            fillColor: PDF_COLORS.top_gray_rgb,
                             
                         },
                         1: { 
@@ -483,12 +531,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 yPos = doc.lastAutoTable.finalY + 10;
             }
 
-            // Garante que está na página 3 antes das evidências
             while (doc.internal.getNumberOfPages() < 3) doc.addPage();
             doc.setPage(3);
             yPos = margin;
 
-            // TÍTULO "EVIDÊNCIAS"
             yPos = drawHeaderRectangle(
                 ["EVIDÊNCIAS"],
                 margin, yPos, pageWidth - (margin * 2), doc,
@@ -500,11 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     borderColor: PDF_COLORS.black_rgb
                 }
             );
-            yPos += 3; // <-- Aqui você pode aumentar para, por exemplo:
-            yPos += 10; // Deixa um espaço maior antes do "TESTE DE COMUTAÇÃO"
-
-            // Para cada evidência:
-           // yPos = desenharEvidencia(doc, data.tempo_convergencia_tfl || "Tempo de Convergência - TFL (ARP) - DATA E HORÁRIO NÃO INFORMADO", yPos, margin, pageWidth, pageHeight);
+            yPos += 10;
 
             const evidenceFields = [
                 { label: "TESTE DE COMUTAÇÃO", value: data.evidencia_teste_comutacao },
@@ -575,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         vPadding: 5,
                         fillColor: PDF_COLORS.dark_blue_rgb,
                         textColor: PDF_COLORS.white_rgb,
-                        borderColor: PDF_COLORS.black_rgb // Alterado para preto
+                        borderColor: PDF_COLORS.black_rgb
                     }
                 );
                 yPos += 8; 
@@ -622,26 +664,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Adiciona números de página, rodapé E A BORDA DA PÁGINA
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 doc.setPage(i);
                 
-                // Desenha a borda preta ao redor da página
-                doc.setDrawColor.apply(doc, PDF_COLORS.black_rgb); // Cor preta
-                doc.setLineWidth(0.3); // Espessura da linha (0.3mm)
-                doc.rect(margin, margin, pageWidth - (2 * margin), pageHeight - (2 * margin)); // Desenha o retângulo
+                doc.setDrawColor.apply(doc, PDF_COLORS.black_rgb);
+                doc.setLineWidth(0.3);
+                doc.rect(margin, margin, pageWidth - (2 * margin), pageHeight - (2 * margin));
 
                 doc.setFontSize(8);
                 doc.setFont(undefined, 'normal');
-                doc.setTextColor.apply(doc, PDF_COLORS.medium_gray_rgb); 
+                doc.setTextColor.apply(doc, PDF_COLORS.medium_gray_rgb);
                 doc.text(
                     `Página ${i} de ${pageCount}`,
                     pageWidth - margin,
-                    pageHeight - 10,
-                    { align: 'right' }
+                    pageHeight - 10, {
+                        align: 'right'
+                    }
                 );
-                 doc.text(
+                doc.text(
                     `${data.codigo_ul || 'UL'} - ${new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`,
                     margin,
                     pageHeight - 10
@@ -654,7 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayGlobalMessage(`PDF "${fileName}" gerado com sucesso!`, 'success');
             } catch (saveError) {
                 console.error("Erro ao salvar o PDF:", saveError);
-                displayGlobalMessage('Erro ao salvar o PDF. Verifique o console para mais detalhes.', 'error');
+                displayGlobalMessage('Erro ao salvar o PDF. Verifique o console.', 'error');
             }
         });
     }
@@ -666,19 +707,5 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onerror = error => reject(error);
             reader.readAsDataURL(file);
         });
-    }
-
-    function desenharEvidencia(doc, texto, yPos, margin, pageWidth, pageHeight) {
-        const lines = doc.splitTextToSize(texto, pageWidth - 2 * margin);
-        const lineHeight = 5.5;
-        lines.forEach(line => {
-            if (yPos + lineHeight > pageHeight - margin) {
-                doc.addPage();
-                yPos = margin;
-            }
-            doc.text(line, margin, yPos);
-            yPos += lineHeight;
-        });
-        return yPos;
     }
 });
