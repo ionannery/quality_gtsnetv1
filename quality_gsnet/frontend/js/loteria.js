@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof new jsPDF().autoTable !== 'function') {
         console.error('jsPDF-AutoTable not loaded!');
         if (generatePdfBtn) generatePdfBtn.disabled = true;
-        displayGlobalMessage('Erro: O plugin de tabelas para PDF (jsPDF-AutoTable) não pôde ser carregado.', 'error');
+        displayGlobalMessage('Erro: O plugin de tabelas para PDF (jsPDF-AutoTable) não pôde ser carregada.', 'error');
         return;
     }
 
@@ -460,10 +460,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fileName = `Relatorio_Transformacao_${(data.codigo_ul || 'CODUL').replace(/[^a-zA-Z0-9_.-]/g, '')}_${fileNameDate}.pdf`;
                 doc.save(fileName);
                 displayGlobalMessage(`PDF "${fileName}" gerado! Enviando...`, 'success');
-                const pdfBase64 = doc.output('datauristring');
+
+                // NOVO: gerar base64 a partir de arraybuffer
+                const pdfArrayBuffer = doc.output('arraybuffer');
+                const pdfUint8 = new Uint8Array(pdfArrayBuffer);
+                // Função para converter Uint8Array para base64
+                function uint8ToBase64(u8Arr) {
+                    let CHUNK_SIZE = 0x8000; // 32KB
+                    let index = 0;
+                    let length = u8Arr.length;
+                    let result = '';
+                    let slice;
+                    while (index < length) {
+                        slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, length));
+                        result += String.fromCharCode.apply(null, slice);
+                        index += CHUNK_SIZE;
+                    }
+                    return btoa(result);
+                }
+                const pdfBase64 = uint8ToBase64(pdfUint8);
+
                 fetch('/api/upload-report', {
-                    method: 'POST', headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({ulCode:data.codigo_ul, pdfBase64:pdfBase64})
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({ulCode:data.codigo_ul, pdfBase64:`${pdfBase64}`})
                 })
                 .then(res => { if(!res.ok) return res.text().then(text => {throw new Error(text||`Servidor: ${res.status}`)}); return res.json(); })
                 .then(resp => displayGlobalMessage(resp.message || 'Enviado!', resp.success?'success':'error'))
