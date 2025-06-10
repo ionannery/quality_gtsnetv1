@@ -1,6 +1,5 @@
 // frontend/js/pega-script.js
 document.addEventListener('DOMContentLoaded', () => {
-    // ... (constantes como antes: ulCodeInput, searchBtn, etc.)
     const ulCodeInput = document.getElementById('ul-code');
     const searchBtn = document.getElementById('search-btn');
     const generateScriptBtn = document.getElementById('generate-script-btn');
@@ -13,32 +12,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionGroups = document.querySelectorAll('.button-options');
     const loadingIndicator = document.getElementById('loading-indicator');
 
-    // Mapeamento de nomes de colunas (CHAVES = Nomes EXATOS do Excel/Backend)
-    // para nomes de exibição (VALORES = Como aparecem na tela)
     const columnDisplayMap = {
-        'codigoulbuscavel': 'Código UL',         
-        'desig_circ_pri': 'Design. Circ. Primário',
+        'codigoulbuscavel': 'Código UL',
         'nomeponto': 'Nome Lotérica',
+        'tipo': 'Tipo', // Movido para cima por relevância
+        'desig_circ_pri': 'Design. Circ. Primário',
         'rede_lan_subnet': 'Rede LAN (SUBNET/28)',
         'loopback_principal': 'Loopback Principal',
         'loopback_contigencia': 'Loopback Contigência',
+        'loopback_switch': 'Loopback Switch',
         'oficio_primario': 'Ofício Primário',
         'oficio_secundario': 'Ofício Secundário',
-        'tipo': 'Tipo',
-        'loopback_switch': 'Loopback Switch',
+        'nome_agencia': 'Nome Agência',         // NOVO
+        'n_agencia': 'Número Agência',       // NOVO
+        'tfl': 'TFL',                        // NOVO
+        'ciaus': 'CETEL',                      // NOVO
         'enderecocompleto': 'Endereço Completo',
         'cidade': 'Cidade',
         'uf': 'UF',
         'cep': 'CEP',
-        'latencia_secundaria': 'Latência Secundária',
+        'latencia_secundaria': 'Latência Secundária', // Mantido por último como exemplo
+        // Adicione quaisquer outros novos mapeamentos aqui
     };
 
     // Ordem em que os campos devem ser exibidos inicialmente.
-    // Use as CHAVES do columnDisplayMap.
-  const displayOrder = [
-         ];
+    // ATUALIZADO para incluir todos os campos do columnDisplayMap. Reordene conforme necessário.
+    const displayOrder = [
+        'codigoulbuscavel',
+        'nomeponto',
+        'tipo',
+        'desig_circ_pri',
+        'rede_lan_subnet',
+        'loopback_principal',
+        'loopback_contigencia',
+        'loopback_switch',
+        'oficio_primario',
+        'oficio_secundario',
+        'nome_agencia', // NOVO
+        'n_agencia',  // NOVO
+        'tfl',        // NOVO
+        'ciaus',      // NOVO
+        'enderecocompleto',
+        'cidade',
+        'uf',
+        'cep',
+        'latencia_secundaria',
+        // Adicione quaisquer outras novas chaves do columnDisplayMap aqui na ordem desejada
+    ];
 
-    // Funções toggleSwitchFields e getSelectedOptionValue (completas)
     function toggleSwitchFields(show) {
         switchConditionalFields.forEach(field => {
             field.style.display = show ? '' : 'none';
@@ -51,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedBtn = group.querySelector('.option-btn.selected');
             if (selectedBtn) return selectedBtn.dataset.value;
         }
-        return null; 
+        return null;
     }
 
     optionGroups.forEach(group => {
@@ -68,62 +89,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialNeedsSwitch = getSelectedOptionValue('needs_switch');
     toggleSwitchFields(initialNeedsSwitch === 'SIM');
 
-    // --- NOVA LÓGICA PARA TIPOS E CAMPOS CONDICIONAIS ---
     const tipoBtns = document.querySelectorAll('.button-options[data-group-name="tipo_script"] .option-btn');
     const tipo1Params = document.getElementById('tipo1-params');
-    // (No futuro: const tipo2Params = document.getElementById('tipo2-params'); ...)
     const routerBtns = document.querySelectorAll('.button-options[data-group-name="router_model"] .option-btn');
     const huaweiVersionGroup = document.getElementById('huawei-version-group');
     const needsSwitchBtns = document.querySelectorAll('.button-options[data-group-name="needs_switch"] .option-btn');
     const switchVersionGroup = document.getElementById('switch-version-group');
 
-    // Seleção exclusiva para TIPO
     tipoBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             tipoBtns.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            // Só mostra os parâmetros do TIPO 1 por enquanto
             if (btn.dataset.value === 'TIPO 1') {
                 tipo1Params.style.display = 'block';
-                // (No futuro: tipo2Params.style.display = 'none'; ...)
             } else {
                 tipo1Params.style.display = 'none';
             }
         });
     });
 
-    // Seleção exclusiva para modelo do router
     routerBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             routerBtns.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            // Se for HUAWEI, mostra grupo de versão
-            if (btn.dataset.value === 'HUAWEI') {
-                huaweiVersionGroup.style.display = 'block';
-            } else {
-                huaweiVersionGroup.style.display = 'none';
-            }
+            huaweiVersionGroup.style.display = (btn.dataset.value === 'HUAWEI') ? 'block' : 'none';
         });
     });
 
-    // Seleção exclusiva para precisa de switch
     needsSwitchBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             needsSwitchBtns.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            // Se SIM, mostra grupo de versão do switch
-            if (btn.dataset.value === 'SIM') {
-                switchVersionGroup.style.display = 'block';
-            } else {
-                switchVersionGroup.style.display = 'none';
-            }
+            switchVersionGroup.style.display = (btn.dataset.value === 'SIM') ? 'block' : 'none';
         });
     });
 
     function createInfoItem(key, labelText, valueText = '-') {
         const infoItemDiv = document.createElement('div');
         infoItemDiv.classList.add('info-item');
-        infoItemDiv.dataset.key = key; // Usar a chave original do backend/Excel
+        infoItemDiv.dataset.key = key;
 
         const labelSpan = document.createElement('span');
         labelSpan.classList.add('info-label');
@@ -133,87 +137,92 @@ document.addEventListener('DOMContentLoaded', () => {
         valueSpan.classList.add('info-value');
         valueSpan.textContent = valueText;
 
-        infoItemDiv.appendChild(labelSpan);
-        infoItemDiv.appendChild(valueSpan);
+        infoItemDiv.append(labelSpan, valueSpan);
         return infoItemDiv;
     }
 
     function displayInitialStructure() {
         if (!dynamicInfoContainer) return;
         const h3Title = dynamicInfoContainer.querySelector('h3');
-        dynamicInfoContainer.innerHTML = ''; 
+        dynamicInfoContainer.innerHTML = '';
         if (h3Title) dynamicInfoContainer.appendChild(h3Title);
 
         displayOrder.forEach(keyFromDisplayOrder => {
-            // O rótulo vem do mapeamento. A chave para data-key é a original.
-            const labelText = columnDisplayMap[keyFromDisplayOrder] || keyFromDisplayOrder; // Fallback para a própria chave
+            const labelText = columnDisplayMap[keyFromDisplayOrder] || keyFromDisplayOrder;
             dynamicInfoContainer.appendChild(createInfoItem(keyFromDisplayOrder, labelText));
         });
     }
 
     function displayUlData(data) {
-        console.log("Dados recebidos do backend para displayUlData:", data); // Log para depuração
+        // console.log("Dados recebidos do backend para displayUlData:", data); // DESCOMENTE PARA DEBUG
         if (!dynamicInfoContainer) return;
         if (ulSearchError) ulSearchError.style.display = 'none';
-        
-        // Itera sobre os dados recebidos do backend
+
         for (const backendKey in data) {
             if (data.hasOwnProperty(backendKey)) {
-                const value = (data[backendKey] !== undefined && data[backendKey] !== null && String(data[backendKey]).trim() !== '') ? data[backendKey] : '-';
-                
-                // Tenta encontrar um item existente no DOM que corresponda à chave do backend
-                // Isso funciona se as chaves no displayOrder/columnDisplayMap são EXATAMENTE as mesmas do backendKey
+                const value = (data[backendKey] !== undefined && data[backendKey] !== null && String(data[backendKey]).trim() !== '') ? String(data[backendKey]).trim() : '-';
                 let itemDiv = dynamicInfoContainer.querySelector(`.info-item[data-key='${backendKey}']`);
 
-                if (itemDiv) { // Se o item existe (foi criado pela displayInitialStructure)
+                if (itemDiv) {
                     const valueSpan = itemDiv.querySelector('.info-value');
-                    if (valueSpan) {
-                        valueSpan.textContent = value;
-                    }
-                } else { 
-                    // Se o item não existia na estrutura inicial (não estava no displayOrder)
-                    // Adiciona como um novo item, apenas se tiver um valor real
-                    if (value !== '-') {
-                        const labelText = columnDisplayMap[backendKey] || backendKey.replace(/([A-Z]+)/g, " $1").replace(/_/g, " ").replace(/^./, str => str.toUpperCase()); // Tenta pegar rótulo do mapa ou formata
+                    if (valueSpan) valueSpan.textContent = value;
+                } else {
+                    // Adiciona apenas se não estiver no displayOrder E tiver um valor real
+                    // E se realmente quisermos adicionar campos não previstos no displayOrder
+                    if (value !== '-' && !displayOrder.includes(backendKey)) {
+                         console.warn(`Campo '${backendKey}' recebido do backend não está no displayOrder. Adicionando dinamicamente.`);
+                         const labelText = columnDisplayMap[backendKey] || backendKey.replace(/_/g, " ").replace(/^./, str => str.toUpperCase());
+                         dynamicInfoContainer.appendChild(createInfoItem(backendKey, labelText, value));
+                    } else if (value !== '-' && displayOrder.includes(backendKey)) {
+                        // Isso não deveria acontecer se displayInitialStructure funcionou,
+                        // mas como fallback, criaria o item se ele sumiu.
+                        console.warn(`Campo '${backendKey}' está no displayOrder mas o div não foi encontrado. Recriando.`);
+                        const labelText = columnDisplayMap[backendKey] || backendKey;
                         dynamicInfoContainer.appendChild(createInfoItem(backendKey, labelText, value));
                     }
                 }
             }
         }
 
-        // Certifica-se que campos que estavam no displayOrder mas não vieram do backend fiquem com '-'
-        displayOrder.forEach(keyFromDisplayOrder => {
-            if (!data.hasOwnProperty(keyFromDisplayOrder)) {
-                let itemDiv = dynamicInfoContainer.querySelector(`.info-item[data-key='${keyFromDisplayOrder}']`);
+        // Garante que campos que estão no displayOrder mas não vieram do backend (ou vieram vazios)
+        // tenham seu valor exibido como '-'
+        displayOrder.forEach(keyInOrder => {
+            if (!data.hasOwnProperty(keyInOrder) || (data.hasOwnProperty(keyInOrder) && (data[keyInOrder] === undefined || data[keyInOrder] === null || String(data[keyInOrder]).trim() === ''))) {
+                let itemDiv = dynamicInfoContainer.querySelector(`.info-item[data-key='${keyInOrder}']`);
                 if (itemDiv) {
                     const valueSpan = itemDiv.querySelector('.info-value');
-                    if (valueSpan) {
+                    if (valueSpan && valueSpan.textContent.trim() !== '-') { // Evita reescrever se já for '-'
                         valueSpan.textContent = '-';
                     }
+                } else {
+                    // Se por algum motivo o item não foi criado em displayInitialStructure, cria aqui com '-'
+                     console.warn(`Campo '${keyInOrder}' do displayOrder não encontrado no DOM. Criando com valor '-'.`);
+                     const labelText = columnDisplayMap[keyInOrder] || keyInOrder;
+                     dynamicInfoContainer.appendChild(createInfoItem(keyInOrder, labelText, '-'));
                 }
             }
         });
     }
 
+
     function clearUlData() {
-        // Reseta todos os campos definidos em displayOrder para '-'
         displayOrder.forEach(keyFromDisplayOrder => {
             const itemDiv = dynamicInfoContainer.querySelector(`.info-item[data-key='${keyFromDisplayOrder}']`);
             if (itemDiv) {
                 const valueSpan = itemDiv.querySelector('.info-value');
-                if (valueSpan) {
-                    valueSpan.textContent = '-';
-                }
+                if (valueSpan) valueSpan.textContent = '-';
             }
         });
 
-        // Remove itens que foram adicionados dinamicamente e NÃO estão no displayOrder
-        const allItems = dynamicInfoContainer.querySelectorAll('.info-item');
-        allItems.forEach(item => {
-            if (!displayOrder.includes(item.dataset.key)) {
-                item.remove();
-            }
-        });
+        // Opcional: Remover itens que não estão no displayOrder (se eles puderem ser adicionados dinamicamente)
+        // Se displayOrder for a única fonte da verdade, este loop abaixo não é estritamente necessário
+        // se displayInitialStructure e displayUlData estiverem corretos.
+        // const allCurrentItems = dynamicInfoContainer.querySelectorAll('.info-item');
+        // allCurrentItems.forEach(item => {
+        //     if (!displayOrder.includes(item.dataset.key)) {
+        //         item.remove();
+        //     }
+        // });
 
         if (scriptOutputTextarea) scriptOutputTextarea.value = '';
         if (copyScriptBtn) copyScriptBtn.style.display = 'none';
@@ -221,30 +230,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     displayInitialStructure();
-    
-    // --- Listener de Busca ---
+
     if (searchBtn && ulCodeInput && ulSearchError && dynamicInfoContainer) {
         searchBtn.addEventListener('click', async () => {
             const query = ulCodeInput.value.trim();
             if (!query) {
-                clearUlData(); 
+                clearUlData();
                 ulSearchError.textContent = 'Por favor, digite Site (UL), Design. Circ. ou CPE para buscar.';
                 ulSearchError.style.display = 'block';
                 return;
             }
-            clearUlData();
-            
-            // Mostrar loading
+            // Não é necessário chamar clearUlData() aqui, pois displayUlData vai atualizar ou criar.
+            // Apenas garanta que o estado inicial (de displayInitialStructure) esteja correto.
+            // Ou, se preferir um reset completo antes da nova busca:
+            displayInitialStructure(); // Isso irá reconstruir a estrutura baseada no displayOrder.
+
             if (loadingIndicator) loadingIndicator.style.display = 'flex';
             searchBtn.disabled = true;
-            
+
             try {
                 const response = await fetch(`/api/ul-data/${encodeURIComponent(query)}`);
                 if (response.ok) {
                     const data = await response.json();
-                    if (typeof data !== 'object' || data === null) {
-                        ulSearchError.textContent = 'Resposta inesperada do servidor.';
+                    // console.log("DADOS RECEBIDOS DO BACKEND:", data); // DESCOMENTE PARA DEBUG
+                    if (typeof data !== 'object' || data === null || Object.keys(data).length === 0) {
+                        ulSearchError.textContent = `Nenhum dado encontrado para "${query}".`;
                         ulSearchError.style.display = 'block';
+                        // Garante que a estrutura base seja exibida com '-' se nenhum dado for retornado
+                        displayInitialStructure(); // Para garantir que os campos do displayOrder apareçam com '-'
                         return;
                     }
                     displayUlData(data);
@@ -252,50 +265,48 @@ document.addEventListener('DOMContentLoaded', () => {
                     const errorData = await response.json().catch(() => ({ message: `Nenhum registro encontrado para "${query}" ou erro na resposta.` }));
                     ulSearchError.textContent = errorData.message || `Nenhum registro encontrado para "${query}".`;
                     ulSearchError.style.display = 'block';
+                    displayInitialStructure(); // Exibe estrutura base com '-' em caso de erro
                 }
             } catch (error) {
                 ulSearchError.textContent = 'Erro de comunicação ao buscar dados. Verifique o console.';
                 ulSearchError.style.display = 'block';
                 console.error('Erro ao buscar dados da UL:', error);
+                displayInitialStructure(); // Exibe estrutura base com '-' em caso de erro de comunicação
             } finally {
-                // Esconder loading e reabilitar botão
                 if (loadingIndicator) loadingIndicator.style.display = 'none';
                 searchBtn.disabled = false;
             }
         });
     }
 
-    // --- Listener para Gerar Script ---
-    if (generateScriptBtn && ulCodeInput && scriptOutputTextarea && copyScriptBtn) { 
+    if (generateScriptBtn && ulCodeInput && scriptOutputTextarea && copyScriptBtn) {
         generateScriptBtn.addEventListener('click', async () => {
-            const currentSearchTerm = ulCodeInput.value.trim(); 
+            const currentSearchTerm = ulCodeInput.value.trim();
             let hasRealData = false;
             const valueSpans = dynamicInfoContainer.querySelectorAll('.info-item .info-value');
             valueSpans.forEach(span => {
-                if (span.textContent !== '-' && span.textContent.trim() !== '') {
-                    hasRealData = true;
-                }
+                if (span.textContent !== '-' && span.textContent.trim() !== '') hasRealData = true;
             });
 
             if (!hasRealData || ulSearchError.style.display === 'block' || !currentSearchTerm) {
                 alert('Por favor, busque e encontre uma Unidade Lotérica válida antes de gerar o script.');
                 return;
             }
-            
+
             const scriptParams = {
                  linkNovo: getSelectedOptionValue('linkNovo'),
                  ownerNovo: getSelectedOptionValue('ownerNovo'),
                  router_model: getSelectedOptionValue('router_model'),
+                 huawei_version: getSelectedOptionValue('router_model') === 'HUAWEI' ? getSelectedOptionValue('huawei_version') : null,
                  needs_switch: getSelectedOptionValue('needs_switch'),
+                 switch_version: getSelectedOptionValue('needs_switch') === 'SIM' ? getSelectedOptionValue('switch_version') : null,
                  ipWanRouter: document.getElementById('input-ip-wan-router')?.value.trim() || '',
                  ipLanRouter: document.getElementById('input-ip-lan-router')?.value.trim() || '',
                  hostnameRouter: document.getElementById('input-hostname-router')?.value.trim() || '',
                  firmwareRouter: document.getElementById('input-firmware-router')?.value.trim() || '',
                  serialRouter: document.getElementById('input-serial-router')?.value.trim() || '',
                  observacoes: document.getElementById('input-observacoes')?.value.trim() || '',
-                 modeloSwitch: '', // Inicializa
-                 serialSwitch: '',   // Inicializa
-                 firmwareSwitch: '', // Inicializa
+                 modeloSwitch: '', serialSwitch: '', firmwareSwitch: '',
             };
 
             if (scriptParams.needs_switch === 'SIM') {
@@ -325,12 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
-    // --- Funções de Cópia ---
+
     if (copyScriptBtn && scriptOutputTextarea && copySuccessMessage) {
         copyScriptBtn.addEventListener('click', () => {
             scriptOutputTextarea.select();
-            scriptOutputTextarea.setSelectionRange(0, 99999); 
+            scriptOutputTextarea.setSelectionRange(0, 99999);
             try {
                 navigator.clipboard.writeText(scriptOutputTextarea.value).then(() => {
                     copySuccessMessage.textContent = 'Script copiado com sucesso!';
@@ -341,10 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function legacyCopy() { 
+    function legacyCopy() {
         let success = false;
         if (!scriptOutputTextarea || !copySuccessMessage) return;
         try {
+            scriptOutputTextarea.select(); // Certifique-se de selecionar antes do execCommand
             const successful = document.execCommand('copy');
             if (successful) {
                 copySuccessMessage.textContent = 'Script copiado (fallback)!';
@@ -352,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 copySuccessMessage.textContent = 'Falha ao copiar (fallback).';
             }
-        } catch (err) { 
+        } catch (err) {
             copySuccessMessage.textContent = 'Erro ao copiar. Copie manualmente.';
             console.error('Fallback copy error:', err);
         }
@@ -361,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         copySuccessMessage.style.display = 'block';
         setTimeout(() => {
             copySuccessMessage.style.display = 'none';
-            copySuccessMessage.classList.remove('error-message'); // Reset class
+            copySuccessMessage.classList.remove('error-message', 'success-message');
         }, 3000);
     }
 });
