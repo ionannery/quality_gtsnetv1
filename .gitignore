@@ -1,5 +1,5 @@
 # Node.js dependencies
-backend/node_modules/
+/home/ubuntu/quality_gtsnetv1/backend/node_modules
 # Logs
 *.log
 npm-debug.log*
