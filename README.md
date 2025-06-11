@@ -13,6 +13,7 @@ Sistema web para automação de relatórios e geração de scripts de configura�
 - [Funcionalidades](#funcionalidades)
 - [Detalhes Técnicos](#detalhes-técnicos)
 - [Personalização dos Dados](#personalização-dos-dados)
+- [Atenção ao .gitignore](#atenção-ao-gitignore)
 - [Licença](#licença)
 
 ---
@@ -33,7 +34,7 @@ O Quality GTSNet é uma aplicação web composta por um backend Node.js/Express 
 ## Estrutura do Projeto
 
 ```
-quality_gsnet/
+quality_gtsnetv1/
 ├── backend/
 │   ├── package.json
 │   ├── server.js
@@ -72,9 +73,16 @@ quality_gsnet/
 1. **Instale as dependências do backend:**
 
    ```sh
-   cd quality_gsnet/backend
+   cd backend
    npm install
    ```
+
+   As principais dependências do backend são:
+   - `express`
+   - `cors`
+   - `xlsx`
+
+   O arquivo [backend/package.json](backend/package.json) controla as dependências.
 
 2. **Inicie o servidor:**
 
@@ -133,26 +141,26 @@ quality_gsnet/
 
 ### Backend
 
-- Servidor Express ([backend/server.js](quality_gsnet/backend/server.js))
-- Rotas de API em [backend/routes/api.js](quality_gsnet/backend/routes/api.js):
+- Servidor Express ([backend/server.js](backend/server.js))
+- Rotas de API em [backend/routes/api.js](backend/routes/api.js):
   - `GET /api/ul-data/:ulCode`: Busca dados da UL no Excel por código, designador, CPE ou nome.
   - `POST /api/generate-script`: Gera script baseado nos dados da UL e parâmetros enviados pelo frontend.
   - `POST /api/upload-report`: Recebe e salva o PDF gerado pelo frontend.
   - `GET /api/list-reports`: Lista relatórios disponíveis, com filtro por UL e data.
   - `GET /api/download-report/:fileName`: Download do PDF do relatório.
 - Leitura do Excel via [xlsx](https://www.npmjs.com/package/xlsx).
-- O arquivo de dados deve estar em [backend/data/lotericas_data2.xlsx](quality_gsnet/backend/data/lotericas_data2.xlsx).
+- O arquivo de dados deve estar em [backend/data/lotericas_data2.xlsx](backend/data/lotericas_data2.xlsx).
 - Cache de dados para performance.
 - Relatórios PDF são salvos em `/home/ubuntu/reports`.
 
 ### Frontend
 
-- HTML/CSS responsivo ([frontend/css/style.css](quality_gsnet/frontend/css/style.css))
+- HTML/CSS responsivo ([frontend/css/style.css](frontend/css/style.css))
 - Scripts JS:
-  - [frontend/js/pega-script.js](quality_gsnet/frontend/js/pega-script.js): Busca, exibição de dados e geração de script.
-  - [frontend/js/loteria.js](quality_gsnet/frontend/js/loteria.js): Formulário, validação e geração de PDF com logs e imagens.
-  - [frontend/js/busca-relatorios.js](quality_gsnet/frontend/js/busca-relatorios.js): Busca e download de relatórios.
-  - [frontend/js/main.js](quality_gsnet/frontend/js/main.js): Funções globais.
+  - [frontend/js/pega-script.js](frontend/js/pega-script.js): Busca, exibição de dados e geração de script.
+  - [frontend/js/loteria.js](frontend/js/loteria.js): Formulário, validação e geração de PDF com logs e imagens.
+  - [frontend/js/busca-relatorios.js](frontend/js/busca-relatorios.js): Busca e download de relatórios.
+  - [frontend/js/main.js](frontend/js/main.js): Funções globais.
 - Geração de PDF usando [jsPDF](https://github.com/parallax/jsPDF) e [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable).
 - Upload e preview de imagens antes da geração do PDF.
 
@@ -161,14 +169,42 @@ quality_gsnet/
 ## Personalização dos Dados
 
 - **Base Excel:**  
-  Atualize o arquivo [backend/data/lotericas_data2.xlsx](quality_gsnet/backend/data/lotericas_data2.xlsx) conforme necessário.
+  Atualize o arquivo [backend/data/lotericas_data2.xlsx](backend/data/lotericas_data2.xlsx) conforme necessário.
 - **Colunas obrigatórias:**  
   Certifique-se de que as colunas do Excel correspondam aos campos esperados no código (ex: `codigoulbuscavel`, `nomeponto`, `loopback_principal`, etc).
 - **Mapeamento de campos:**  
-  O mapeamento entre colunas do Excel e campos exibidos pode ser ajustado em [frontend/js/pega-script.js](quality_gsnet/frontend/js/pega-script.js), no objeto `columnDisplayMap`.
+  O mapeamento entre colunas do Excel e campos exibidos pode ser ajustado em [frontend/js/pega-script.js](frontend/js/pega-script.js), no objeto `columnDisplayMap`.
 - **Rótulos personalizados:**  
   Os nomes exibidos no frontend podem ser facilmente alterados no objeto `columnDisplayMap`.
 - **Upload de imagens:**  
   Para adicionar várias imagens, basta selecionar múltiplos arquivos ou adicionar incrementalmente. As imagens permanecem no preview até a geração do PDF.
 
 ---
+
+## Atenção ao .gitignore
+
+**Importante:**  
+O arquivo `.gitignore` foi alterado recentemente. Certifique-se de **NÃO ignorar** arquivos essenciais do backend, como `package.json` e `package-lock.json`, para que as dependências do Node.js/Express sejam corretamente versionadas e instaladas em outros ambientes.
+
+Exemplo de configuração correta para o backend:
+
+```
+# Node.js dependencies
+backend/node_modules/
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# OS files
+.DS_Store
+Thumbs.db
+```
+
+**Não inclua `package.json` ou `package-lock.json` no .gitignore!**
+
+---
+
+## Licença
+
+Este projeto é privado e de uso interno da Quality GTSNet.
