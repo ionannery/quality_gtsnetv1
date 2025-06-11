@@ -1,5 +1,5 @@
 # Node.js dependencies
-node_modules/
+backend/node_modules/
 # Logs
 *.log
 npm-debug.log*
@@ -8,3 +8,5 @@ yarn-error.log*
 # OS files
 .DS_Store
 Thumbs.db
+package-lock.json
+package.json
